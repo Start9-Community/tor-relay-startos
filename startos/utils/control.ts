@@ -1,29 +1,12 @@
-import { connect } from 'node:net'
 import { sdk } from '../sdk'
+import { ControlConnection } from './controlConnection'
 import { Mode, modeDir } from './index'
 
-/** Resolves null when the socket is absent or silent. */
-function send(mode: Mode, ...commands: string[]): Promise<string | null> {
-  return new Promise((resolve) => {
-    const socket = connect(
-      sdk.volumes.main.subpath(`${modeDir(mode)}/control.sock`),
-    )
-    let data = ''
-    socket.setTimeout(5000)
-    socket.on('connect', () => {
-      socket.write(['AUTHENTICATE', ...commands, 'QUIT', ''].join('\r\n'))
-    })
-    socket.on('data', (chunk) => {
-      data += chunk.toString()
-    })
-    socket.on('end', () => resolve(data))
-    socket.on('error', () => resolve(null))
-    socket.on('timeout', () => {
-      socket.destroy()
-      resolve(null)
-    })
-  })
-}
+const connections: Partial<Record<Mode, ControlConnection>> = {}
+const send = (mode: Mode, ...commands: string[]) =>
+  (connections[mode] ??= new ControlConnection(
+    sdk.volumes.main.subpath(`${modeDir(mode)}/control.sock`),
+  )).send(...commands)
 
 export type NodeStatus = {
   version: string | null
