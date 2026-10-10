@@ -5,6 +5,8 @@ import { i18n } from '../i18n'
 import { sdk } from '../sdk'
 import { orExposure, singleIp } from '../utils/exposure'
 
+const confirmTaskId = 'tor-node:confirm-public-ip'
+
 /**
  * Both tasks are critical, so StartOS keeps the service stopped while either is open.
  * The IP task re-arms whenever the ORPort's public IPv4 stops matching the confirmed one.
@@ -19,7 +21,16 @@ export const watchTasks = sdk.setupOnInit(async (effects) => {
     })
   }
 
+  const confirmed = await storeJson.read((s) => s.confirmedIp).const(effects)
   const detected = singleIp(await orExposure(effects).const())
+
+  // A match clears the task outright: StartOS does not re-run an
+  // input-not-matches check when only the address comes back, as after a restore.
+  if (detected && detected === confirmed) {
+    await sdk.action.clearTask(effects, confirmTaskId)
+    return
+  }
+
   await sdk.action.createOwnTask(effects, confirmPublicIp, 'critical', {
     reason: detected
       ? i18n('Confirm ${ip} as the public IPv4 this node advertises.', {
@@ -34,5 +45,6 @@ export const watchTasks = sdk.setupOnInit(async (effects) => {
       set: detected ? { ip: detected } : {},
     },
     when: { condition: 'input-not-matches', once: false },
+    replayId: confirmTaskId,
   })
 })

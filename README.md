@@ -82,7 +82,7 @@ When StartOS assigns an external ORPort other than 9001, the torrc advertises th
 ## Tasks
 
 - **Configure Node** — critical, raised until the store is configured; cleared once it is.
-- **Confirm Public IP** — critical, `input-not-matches` against the ORPort's current single public IPv4. It re-arms whenever that address changes, is removed, or gains a second address, and StartOS keeps the service stopped while it is open.
+- **Confirm Public IP** — critical, `input-not-matches` against the ORPort's current single public IPv4. It re-arms whenever that address changes, is removed, or gains a second address, and StartOS keeps the service stopped while it is open. When the address matches the confirmed one again (for example once the user re-enables it after a restore), init clears the task by its replay ID.
 
 ## Health Checks
 
@@ -93,7 +93,7 @@ When StartOS assigns an external ORPort other than 9001, the torrc advertises th
 
 ## Backups and Restore
 
-The whole `main` volume is backed up, including both identities. Restoring onto a second server while the first still runs puts the same identity online twice; stop one first.
+The whole `main` volume is backed up, including both identities and the confirmed IP. StartOS does not restore which addresses were public; once the user re-enables the same public IPv4 on the interfaces, the node starts without re-confirming. Restoring onto a second server while the first still runs puts the same identity online twice; stop one first.
 
 ## Limitations and Differences
 

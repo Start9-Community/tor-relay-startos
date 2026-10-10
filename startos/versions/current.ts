@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '0.4.9.14-beta.1:0',
+  version: '0.4.9.14-beta.2:0',
   releaseNotes: {
     en_US:
-      "Beta 1: the health checks keep one control connection to Tor open instead of reconnecting on every poll, so the log no longer fills with 'New control connection opened'.",
+      'Beta 2: after a restore, re-enabling the same public IPv4 on the interfaces is enough. Confirm Public IP is no longer asked again for an address you already confirmed.',
     es_ES:
-      "Beta 1: las comprobaciones de estado mantienen abierta una sola conexión de control con Tor en lugar de reconectar en cada sondeo, así que el registro ya no se llena de 'New control connection opened'.",
+      'Beta 2: tras una restauración basta con volver a activar la misma IPv4 pública en las interfaces. Ya no se vuelve a pedir Confirmar IP pública para una dirección ya confirmada.',
     de_DE:
-      "Beta 1: Die Statusprüfungen halten eine einzige Steuerverbindung zu Tor offen, statt sich bei jeder Abfrage neu zu verbinden. Das Log füllt sich nicht mehr mit 'New control connection opened'.",
+      'Beta 2: Nach einer Wiederherstellung genügt es, dieselbe öffentliche IPv4 an den Schnittstellen wieder zu aktivieren. „Öffentliche IP bestätigen“ wird für eine bereits bestätigte Adresse nicht erneut verlangt.',
     pl_PL:
-      "Beta 1: kontrole stanu utrzymują jedno otwarte połączenie sterujące z Torem zamiast łączyć się przy każdym odpytaniu, więc dziennik nie zapełnia się już wpisami 'New control connection opened'.",
+      'Beta 2: po przywróceniu z kopii wystarczy ponownie włączyć ten sam publiczny IPv4 w interfejsach. Potwierdź publiczny IP nie jest już wymagane ponownie dla adresu, który został już potwierdzony.',
     fr_FR:
-      "Bêta 1 : les vérifications d'état gardent une seule connexion de contrôle ouverte vers Tor au lieu de se reconnecter à chaque interrogation ; le journal ne se remplit plus de 'New control connection opened'.",
+      "Bêta 2 : après une restauration, il suffit de réactiver la même IPv4 publique sur les interfaces. Confirmer l'IP publique n'est plus redemandé pour une adresse déjà confirmée.",
   },
   migrations: {
     up: async ({ effects }) => {},

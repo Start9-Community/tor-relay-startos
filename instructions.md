@@ -33,6 +33,10 @@ tar czf tor-identity.tgz -C <old DataDirectory> keys/secret_id_key keys/ed25519_
 base64 -i tor-identity.tgz | pbcopy
 ```
 
+### After restoring from a backup
+
+StartOS does not restore which addresses are public. Open **Interfaces → Tor ORPort** (and **obfs4 Bridge Port** in bridge mode) and enable the public IPv4 again. If it is the address you confirmed before, the node starts without asking again.
+
 ### When the public IP changes
 
 Tor stops and a task asks you to **Confirm Public IP** again. It stays stopped until you do.
