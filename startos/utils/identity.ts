@@ -1,6 +1,6 @@
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { sdk } from '../sdk'
-import { Identity, identityFiles, validate } from './archive'
+import { Identity, identityFiles, obfs4StatePath, validate } from './archive'
 import { Mode, modeDir } from './index'
 
 const path = (mode: Mode, rel: string) =>
@@ -22,11 +22,16 @@ const derived = [
 
 export async function readIdentity(mode: Mode): Promise<Identity | null> {
   try {
+    const obfs4State =
+      mode === 'bridge'
+        ? await readFile(path(mode, obfs4StatePath)).catch(() => undefined)
+        : undefined
     return validate({
       secret_id_key: await readFile(path(mode, 'keys/secret_id_key')),
       ed25519_master_id_secret_key: await readFile(
         path(mode, 'keys/ed25519_master_id_secret_key'),
       ),
+      obfs4State,
     })
   } catch {
     return null
@@ -38,6 +43,12 @@ export async function installIdentity(mode: Mode, id: Identity) {
   for (const f of derived) await rm(path(mode, f), { force: true })
   for (const f of identityFiles)
     await writeFile(path(mode, `keys/${f}`), id[f], { mode: 0o600 })
+  // A relay has no pluggable transport, so the obfs4 state only lands in bridge mode.
+  if (mode === 'bridge' && id.obfs4State) {
+    await mkdir(path(mode, 'pt_state'), { recursive: true, mode: 0o700 })
+    await rm(path(mode, 'pt_state/obfs4_bridgeline.txt'), { force: true })
+    await writeFile(path(mode, obfs4StatePath), id.obfs4State, { mode: 0o600 })
+  }
 }
 
 /** `<nickname> <FINGERPRINT>` as Tor writes it, split; null before Tor has run in this mode. */

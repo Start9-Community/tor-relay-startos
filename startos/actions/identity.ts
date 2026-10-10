@@ -19,7 +19,7 @@ export const importIdentity = sdk.Action.withInput(
   async () => ({
     name: i18n('Import Identity'),
     description: i18n(
-      'Bring an existing relay or bridge identity, so its fingerprint and history carry over. Paste the base64 of a .tar.gz holding keys/secret_id_key and keys/ed25519_master_id_secret_key.',
+      'Bring an existing relay or bridge identity, so its fingerprint and history carry over. Paste the base64 of a .tar.gz holding keys/secret_id_key and keys/ed25519_master_id_secret_key, plus pt_state/obfs4_state.json for a bridge to keep its bridge line.',
     ),
     warning: i18n(
       "Replaces this mode's identity. Never run the same identity on two machines at once: stop the old node first.",

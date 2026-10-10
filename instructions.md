@@ -33,6 +33,10 @@ tar czf tor-identity.tgz -C <old DataDirectory> keys/secret_id_key keys/ed25519_
 base64 -i tor-identity.tgz | pbcopy
 ```
 
+### Moving a bridge
+
+Export Identity in bridge mode includes obfs4's state, and Import Identity restores it. The bridge keeps both its fingerprint and its bridge line, so people who already use it can keep connecting.
+
 ### After restoring from a backup
 
 StartOS does not restore which addresses are public. Open **Interfaces → Tor ORPort** (and **obfs4 Bridge Port** in bridge mode) and enable the public IPv4 again. If it is the address you confirmed before, the node starts without asking again.

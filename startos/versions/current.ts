@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '0.4.9.14-beta.2:0',
+  version: '0.4.9.14-beta.3:0',
   releaseNotes: {
     en_US:
-      'Beta 2: after a restore, re-enabling the same public IPv4 on the interfaces is enough. Confirm Public IP is no longer asked again for an address you already confirmed.',
+      "Beta 3: in bridge mode, Export Identity also saves obfs4's state and Import Identity restores it, so a bridge keeps its bridge line when it moves to another server.",
     es_ES:
-      'Beta 2: tras una restauración basta con volver a activar la misma IPv4 pública en las interfaces. Ya no se vuelve a pedir Confirmar IP pública para una dirección ya confirmada.',
+      'Beta 3: en modo puente, Exportar identidad también guarda el estado de obfs4 e Importar identidad lo restaura, así un puente conserva su línea de puente al trasladarse a otro servidor.',
     de_DE:
-      'Beta 2: Nach einer Wiederherstellung genügt es, dieselbe öffentliche IPv4 an den Schnittstellen wieder zu aktivieren. „Öffentliche IP bestätigen“ wird für eine bereits bestätigte Adresse nicht erneut verlangt.',
+      'Beta 3: Im Bridge-Modus sichert „Identität exportieren“ auch den obfs4-Zustand, und „Identität importieren“ stellt ihn wieder her. So behält eine Bridge beim Umzug auf einen anderen Server ihre Bridge-Zeile.',
     pl_PL:
-      'Beta 2: po przywróceniu z kopii wystarczy ponownie włączyć ten sam publiczny IPv4 w interfejsach. Potwierdź publiczny IP nie jest już wymagane ponownie dla adresu, który został już potwierdzony.',
+      'Beta 3: w trybie mostka Eksportuj tożsamość zapisuje też stan obfs4, a Importuj tożsamość go przywraca, więc mostek zachowuje swoją linię mostka po przeniesieniu na inny serwer.',
     fr_FR:
-      "Bêta 2 : après une restauration, il suffit de réactiver la même IPv4 publique sur les interfaces. Confirmer l'IP publique n'est plus redemandé pour une adresse déjà confirmée.",
+      "Bêta 3 : en mode pont, Exporter l'identité enregistre aussi l'état d'obfs4 et Importer une identité le restaure ; un pont conserve ainsi sa ligne de pont lorsqu'il change de serveur.",
   },
   migrations: {
     up: async ({ effects }) => {},

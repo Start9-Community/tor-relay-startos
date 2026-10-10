@@ -71,13 +71,13 @@ When StartOS assigns an external ORPort other than 9001, the torrc advertises th
 
 ## Actions
 
-| Action            | When                            | Effect                                                                                                                           |
-| ----------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Configure Node    | Any time                        | Mode, nickname, contact info, bandwidth, monthly limit. Restarts the service. Changing mode switches to that mode's identity.    |
-| Confirm Public IP | First setup, after an IP change | Checks the input equals the ORPort's single public IPv4, that it is public, and that the user confirmed it is static; stores it. |
-| Node Info         | Any time                        | Fingerprint, Tor Metrics link (hashed fingerprint for bridges), bridge line in bridge mode.                                      |
-| Import Identity   | Service stopped                 | Installs `secret_id_key` and `ed25519_master_id_secret_key` from a base64 `.tar.gz` into the chosen mode, removing derived keys. |
-| Export Identity   | Any time                        | Returns the chosen mode's two identity keys as a base64 `.tar.gz`.                                                               |
+| Action            | When                            | Effect                                                                                                                                                                                                                                                       |
+| ----------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Configure Node    | Any time                        | Mode, nickname, contact info, bandwidth, monthly limit. Restarts the service. Changing mode switches to that mode's identity.                                                                                                                                |
+| Confirm Public IP | First setup, after an IP change | Checks the input equals the ORPort's single public IPv4, that it is public, and that the user confirmed it is static; stores it.                                                                                                                             |
+| Node Info         | Any time                        | Fingerprint, Tor Metrics link (hashed fingerprint for bridges), bridge line in bridge mode.                                                                                                                                                                  |
+| Import Identity   | Service stopped                 | Installs `secret_id_key` and `ed25519_master_id_secret_key` from a base64 `.tar.gz` into the chosen mode, removing derived keys. Into bridge mode it also restores `pt_state/obfs4_state.json` when the archive has it, so the bridge line keeps its `cert`. |
+| Export Identity   | Any time                        | Returns the chosen mode's two identity keys as a base64 `.tar.gz`, plus `pt_state/obfs4_state.json` in bridge mode.                                                                                                                                          |
 
 ## Tasks
 

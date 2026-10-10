@@ -150,3 +150,49 @@ test('rejects an archive without both keys', () => {
   id.ed25519_master_id_secret_key = Buffer.alloc(10)
   assert.throws(() => archive.readArchive(archive.writeArchive(id)), /ed25519/)
 })
+
+const obfs4State = () =>
+  Buffer.from(
+    JSON.stringify({
+      'node-id': 'a1b2c3d4e5f60718293a4b5c6d7e8f9012345678',
+      'private-key': '00'.repeat(32),
+      'public-key': '11'.repeat(32),
+      'drbg-seed': '22'.repeat(24),
+      'iat-mode': 0,
+    }),
+  )
+
+test('bridge archive carries obfs4 state through a round trip', () => {
+  const id = { ...fakeIdentity(), obfs4State: obfs4State() }
+  const back = archive.readArchive(archive.writeArchive(id))
+  assert.deepStrictEqual(back.obfs4State, id.obfs4State)
+  assert.deepStrictEqual(back.secret_id_key, id.secret_id_key)
+})
+
+test('relay archive stays without obfs4 state', () => {
+  const back = archive.readArchive(archive.writeArchive(fakeIdentity()))
+  assert.equal(back.obfs4State, undefined)
+})
+
+test('rejects a broken obfs4 state file', () => {
+  const id = { ...fakeIdentity(), obfs4State: Buffer.from('{"iat-mode":0}') }
+  assert.throws(() => archive.readArchive(archive.writeArchive(id)), /node-id/)
+  id.obfs4State = Buffer.from('not json')
+  assert.throws(() => archive.readArchive(archive.writeArchive(id)), /JSON/)
+})
+
+test('reads obfs4 state from a tar czf of a Tor DataDirectory', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'tor-br-'))
+  mkdirSync(join(dir, 'keys'))
+  mkdirSync(join(dir, 'pt_state'))
+  const id = fakeIdentity()
+  writeFileSync(join(dir, 'keys/secret_id_key'), id.secret_id_key)
+  writeFileSync(
+    join(dir, 'keys/ed25519_master_id_secret_key'),
+    id.ed25519_master_id_secret_key,
+  )
+  writeFileSync(join(dir, 'pt_state/obfs4_state.json'), obfs4State())
+  execSync(`tar czf ${dir}/b.tgz -C ${dir} keys pt_state/obfs4_state.json`)
+  const back = archive.readArchive(readFileSync(join(dir, 'b.tgz')))
+  assert.deepStrictEqual(back.obfs4State, obfs4State())
+})

@@ -5,9 +5,30 @@ export const identityFiles = [
   'ed25519_master_id_secret_key',
 ] as const
 type IdentityFile = (typeof identityFiles)[number]
-export type Identity = Record<IdentityFile, Buffer>
+export type Identity = Record<IdentityFile, Buffer> & {
+  /** lyrebird's pt_state/obfs4_state.json; it holds the cert in the bridge line. */
+  obfs4State?: Buffer
+}
+
+export const obfs4StatePath = 'pt_state/obfs4_state.json'
 
 const ED25519_HEADER = '== ed25519v1-secret: type0 =='
+
+function validateObfs4State(state: Buffer) {
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(state.toString('utf8'))
+  } catch {
+    throw new Error('obfs4_state.json is not valid JSON')
+  }
+  const o = parsed as Record<string, unknown> | null
+  if (
+    !o ||
+    typeof o['node-id'] !== 'string' ||
+    typeof o['private-key'] !== 'string'
+  )
+    throw new Error('obfs4_state.json lacks node-id or private-key')
+}
 
 export function validate(id: Partial<Identity>): Identity {
   const rsa = id.secret_id_key
@@ -23,7 +44,12 @@ export function validate(id: Partial<Identity>): Identity {
     !ed.toString('latin1').startsWith(ED25519_HEADER)
   )
     throw new Error('ed25519_master_id_secret_key is missing or malformed')
-  return { secret_id_key: rsa, ed25519_master_id_secret_key: ed }
+  if (id.obfs4State) validateObfs4State(id.obfs4State)
+  return {
+    secret_id_key: rsa,
+    ed25519_master_id_secret_key: ed,
+    ...(id.obfs4State ? { obfs4State: id.obfs4State } : {}),
+  }
 }
 
 const field = (h: Buffer, start: number, len: number) =>
@@ -32,7 +58,7 @@ const field = (h: Buffer, start: number, len: number) =>
     .toString('latin1')
     .replace(/\0.*$/s, '')
 
-/** Reads the two identity keys out of a .tar or .tar.gz, at any depth. */
+/** Reads the two identity keys, and obfs4_state.json when present, out of a .tar or .tar.gz at any depth. */
 export function readArchive(archive: Buffer): Identity {
   const tar =
     archive[0] === 0x1f && archive[1] === 0x8b ? gunzipSync(archive) : archive
@@ -53,6 +79,8 @@ export function readArchive(archive: Buffer): Identity {
       (identityFiles as readonly string[]).includes(base)
     )
       found[base as IdentityFile] = Buffer.from(body)
+    else if ((type === '0' || type === '') && base === 'obfs4_state.json')
+      found.obfs4State = Buffer.from(body)
     off += 512 + Math.ceil(size / 512) * 512
   }
   return validate(found)
@@ -81,12 +109,16 @@ function header(name: string, size: number): Buffer {
   return h
 }
 
-/** A .tar.gz holding keys/secret_id_key and keys/ed25519_master_id_secret_key. */
+/** A .tar.gz holding the two keys under keys/, plus pt_state/obfs4_state.json for a bridge. */
 export function writeArchive(id: Identity): Buffer {
+  const entries: [string, Buffer][] = identityFiles.map((f) => [
+    `keys/${f}`,
+    id[f],
+  ])
+  if (id.obfs4State) entries.push([obfs4StatePath, id.obfs4State])
   const parts: Buffer[] = []
-  for (const f of identityFiles) {
-    const body = id[f]
-    parts.push(header(`keys/${f}`, body.length), body)
+  for (const [name, body] of entries) {
+    parts.push(header(name, body.length), body)
     const pad = (512 - (body.length % 512)) % 512
     if (pad) parts.push(Buffer.alloc(pad, 0))
   }

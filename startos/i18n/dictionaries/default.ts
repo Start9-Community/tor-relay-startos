@@ -35,7 +35,7 @@ const dict = {
   'Public IP Confirmed': 31,
   'Tor Node will advertise ${ip}. Start the service if it is stopped.': 32,
   'Import Identity': 33,
-  'Bring an existing relay or bridge identity, so its fingerprint and history carry over. Paste the base64 of a .tar.gz holding keys/secret_id_key and keys/ed25519_master_id_secret_key.': 34,
+  'Bring an existing relay or bridge identity, so its fingerprint and history carry over. Paste the base64 of a .tar.gz holding keys/secret_id_key and keys/ed25519_master_id_secret_key, plus pt_state/obfs4_state.json for a bridge to keep its bridge line.': 34,
   "Replaces this mode's identity. Never run the same identity on two machines at once: stop the old node first.": 35,
   'Import into': 36,
   'Identity archive (base64)': 37,
