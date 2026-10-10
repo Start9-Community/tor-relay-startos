@@ -1,0 +1,38 @@
+import { configureNode } from '../actions/configureNode'
+import { confirmPublicIp } from '../actions/confirmPublicIp'
+import { storeJson } from '../fileModels/store.json'
+import { i18n } from '../i18n'
+import { sdk } from '../sdk'
+import { orExposure, singleIp } from '../utils/exposure'
+
+/**
+ * Both tasks are critical, so StartOS keeps the service stopped while either is open.
+ * The IP task re-arms whenever the ORPort's public IPv4 stops matching the confirmed one.
+ */
+export const watchTasks = sdk.setupOnInit(async (effects) => {
+  const configured = await storeJson.read((s) => s.configured).const(effects)
+  if (configured) {
+    await sdk.action.clearTask(effects, 'tor-node:configure-node')
+  } else {
+    await sdk.action.createOwnTask(effects, configureNode, 'critical', {
+      reason: i18n('Choose relay or bridge mode and name your node.'),
+    })
+  }
+
+  const detected = singleIp(await orExposure(effects).const())
+  await sdk.action.createOwnTask(effects, confirmPublicIp, 'critical', {
+    reason: detected
+      ? i18n('Confirm ${ip} as the public IPv4 this node advertises.', {
+          ip: detected,
+        })
+      : i18n(
+          'Enable exactly one public IPv4 on the Tor ORPort interface, then confirm it here.',
+        ),
+    input: {
+      kind: 'partial',
+      accept: [{ ip: detected ?? '' }],
+      set: detected ? { ip: detected } : {},
+    },
+    when: { condition: 'input-not-matches', once: false },
+  })
+})

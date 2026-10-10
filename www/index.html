@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tor Node</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <style>
+      :root {
+        --bg: #f6f5f8;
+        --card: #ffffff;
+        --ink: #1d1a24;
+        --muted: #6b6578;
+        --line: #e4e0ea;
+        --accent: #6b3fa0;
+        --ok: #1f7a4d;
+        --warn: #a15c00;
+        --bad: #b3261e;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #141218;
+          --card: #1d1a23;
+          --ink: #ece8f2;
+          --muted: #9d96aa;
+          --line: #2e2a36;
+          --accent: #b48ee6;
+          --ok: #5cc98f;
+          --warn: #e6a23c;
+          --bad: #f2867d;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          15px/1.5 ui-sans-serif,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+      }
+      main {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 32px 16px 48px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      header img {
+        width: 36px;
+        height: 36px;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 0;
+        letter-spacing: -0.01em;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        margin-bottom: 16px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex: none;
+        background: var(--muted);
+      }
+      .dot.ok {
+        background: var(--ok);
+      }
+      .dot.warn {
+        background: var(--warn);
+      }
+      .dot.bad {
+        background: var(--bad);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 12px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 14px 16px;
+        min-width: 0;
+      }
+      .label {
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .value {
+        font-size: 20px;
+        font-weight: 600;
+        margin-top: 2px;
+        font-variant-numeric: tabular-nums;
+        overflow-wrap: anywhere;
+      }
+      .value.small {
+        font-size: 14px;
+        font-weight: 500;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      footer {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <img src="favicon.svg" alt="" />
+        <div>
+          <h1 id="title">Tor Node</h1>
+          <div class="sub" id="subtitle">Loading…</div>
+        </div>
+      </header>
+
+      <div class="status">
+        <span class="dot" id="dot"></span
+        ><span id="state">Waiting for status</span>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="label">Mode</div>
+          <div class="value" id="mode">–</div>
+        </div>
+        <div class="card">
+          <div class="label">Public IPv4</div>
+          <div class="value small" id="address">–</div>
+        </div>
+        <div class="card">
+          <div class="label">Uptime</div>
+          <div class="value" id="uptime">–</div>
+        </div>
+        <div class="card">
+          <div class="label">Received</div>
+          <div class="value" id="read">–</div>
+        </div>
+        <div class="card">
+          <div class="label">Sent</div>
+          <div class="value" id="written">–</div>
+        </div>
+        <div class="card">
+          <div class="label">Monthly limit</div>
+          <div class="value small" id="accounting">–</div>
+        </div>
+      </div>
+
+      <footer id="footer"></footer>
+    </main>
+    <script>
+      const $ = (id) => document.getElementById(id)
+      const bytes = (n) => {
+        if (n == null) return '–'
+        const u = ['B', 'KB', 'MB', 'GB', 'TB']
+        let i = 0
+        while (n >= 1024 && i < u.length - 1) {
+          n /= 1024
+          i++
+        }
+        return n.toFixed(i ? 1 : 0) + ' ' + u[i]
+      }
+      const duration = (s) => {
+        if (s == null) return '–'
+        const d = Math.floor(s / 86400),
+          h = Math.floor((s % 86400) / 3600),
+          m = Math.floor((s % 3600) / 60)
+        return d ? `${d}d ${h}h` : h ? `${h}h ${m}m` : `${m}m`
+      }
+      function render(s) {
+        const t = s.tor
+        $('title').textContent = s.nickname || 'Tor Node'
+        $('subtitle').textContent = t && t.version ? 'Tor ' + t.version : 'Tor'
+        $('mode').textContent =
+          s.mode === 'bridge'
+            ? 'obfs4 bridge'
+            : s.mode === 'relay'
+              ? 'Non-exit relay'
+              : '–'
+        $('address').textContent = s.address || '–'
+        let cls = 'warn',
+          msg
+        if (s.blocked) {
+          cls = 'bad'
+          msg = s.blocked
+        } else if (!t) msg = 'Waiting for Tor'
+        else if ((t.bootstrap ?? 0) < 100)
+          msg = `Bootstrapping ${t.bootstrap ?? 0}%`
+        else if (t.reachable && t.published) {
+          cls = 'ok'
+          msg = 'Reachable and published'
+        } else msg = 'Connected; testing reachability'
+        $('dot').className = 'dot ' + cls
+        $('state').textContent = msg
+        $('uptime').textContent = duration(t && t.uptimeSeconds)
+        $('read').textContent = bytes(t && t.bytesRead)
+        $('written').textContent = bytes(t && t.bytesWritten)
+        $('accounting').textContent =
+          t && t.accountingEnabled
+            ? `${(t.accountingBytes || '').split(' ').map(Number).map(bytes).join(' / ')} until ${t.accountingIntervalEnd || '?'}`
+            : 'Off'
+        $('footer').textContent =
+          'Updated ' +
+          new Date(s.updated).toLocaleString() +
+          '. Counters reset when Tor restarts.'
+      }
+      async function refresh() {
+        try {
+          const r = await fetch('status.json', { cache: 'no-store' })
+          if (r.ok) render(await r.json())
+        } catch (e) {
+          $('state').textContent = 'Status unavailable'
+        }
+      }
+      refresh()
+      setInterval(refresh, 15000)
+    </script>
+  </body>
+</html>
