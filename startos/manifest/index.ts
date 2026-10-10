@@ -5,7 +5,7 @@ export const manifest = setupManifest({
   id: 'tor-node',
   title: 'Tor Node',
   license: 'BSD-3-Clause',
-  packageRepo: 'https://github.com/alru78/alru78-tor-node-startos',
+  packageRepo: 'https://github.com/alru78/tor-node-startos',
   upstreamRepo: 'https://gitlab.torproject.org/tpo/core/tor',
   marketingUrl: 'https://community.torproject.org/relay/',
   donationUrl: 'https://donate.torproject.org/',

@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '0.4.9.14-beta.3:0',
+  version: '0.4.9.14:0',
   releaseNotes: {
     en_US:
-      "Beta 3: in bridge mode, Export Identity also saves obfs4's state and Import Identity restores it, so a bridge keeps its bridge line when it moves to another server.",
+      'First release. Runs Tor as a non-exit relay or an obfs4 bridge, never with onion services, and only on a public IPv4 you confirm; Tor stops and asks again if that address changes. Each mode keeps its own identity, and Import and Export Identity move a relay or bridge between servers with its fingerprint and, for a bridge, its bridge line. Tor 0.4.9.14, lyrebird 0.7.0.',
     es_ES:
-      'Beta 3: en modo puente, Exportar identidad también guarda el estado de obfs4 e Importar identidad lo restaura, así un puente conserva su línea de puente al trasladarse a otro servidor.',
+      'Primera versión. Ejecuta Tor como relé sin salida o como puente obfs4, nunca con servicios onion, y solo en una IPv4 pública que confirmes; Tor se detiene y vuelve a preguntar si esa dirección cambia. Cada modo conserva su propia identidad, e Importar y Exportar identidad trasladan un relé o puente entre servidores con su huella y, en el caso de un puente, su línea de puente. Tor 0.4.9.14, lyrebird 0.7.0.',
     de_DE:
-      'Beta 3: Im Bridge-Modus sichert „Identität exportieren“ auch den obfs4-Zustand, und „Identität importieren“ stellt ihn wieder her. So behält eine Bridge beim Umzug auf einen anderen Server ihre Bridge-Zeile.',
+      'Erste Version. Betreibt Tor als Relay ohne Exit oder als obfs4-Bridge, nie mit Onion-Diensten und nur auf einer öffentlichen IPv4, die Sie bestätigen; ändert sich diese Adresse, stoppt Tor und fragt erneut. Jeder Modus behält seine eigene Identität, und „Identität importieren“ und „Identität exportieren“ ziehen ein Relay oder eine Bridge samt Fingerprint und, bei einer Bridge, Bridge-Zeile auf einen anderen Server um. Tor 0.4.9.14, lyrebird 0.7.0.',
     pl_PL:
-      'Beta 3: w trybie mostka Eksportuj tożsamość zapisuje też stan obfs4, a Importuj tożsamość go przywraca, więc mostek zachowuje swoją linię mostka po przeniesieniu na inny serwer.',
+      'Pierwsze wydanie. Uruchamia Tora jako przekaźnik bez wyjścia lub mostek obfs4, nigdy z usługami onion, i tylko na potwierdzonym przez ciebie publicznym IPv4; jeśli ten adres się zmieni, Tor zatrzymuje się i pyta ponownie. Każdy tryb ma własną tożsamość, a Importuj i Eksportuj tożsamość przenoszą przekaźnik lub mostek między serwerami wraz z odciskiem, a w przypadku mostka także z linią mostka. Tor 0.4.9.14, lyrebird 0.7.0.',
     fr_FR:
-      "Bêta 3 : en mode pont, Exporter l'identité enregistre aussi l'état d'obfs4 et Importer une identité le restaure ; un pont conserve ainsi sa ligne de pont lorsqu'il change de serveur.",
+      "Première version. Exécute Tor en relais sans sortie ou en pont obfs4, jamais avec des services onion, et uniquement sur une IPv4 publique que vous confirmez ; si cette adresse change, Tor s'arrête et redemande. Chaque mode conserve sa propre identité, et Importer et Exporter l'identité déplacent un relais ou un pont entre serveurs avec son empreinte et, pour un pont, sa ligne de pont. Tor 0.4.9.14, lyrebird 0.7.0.",
   },
   migrations: {
     up: async ({ effects }) => {},
