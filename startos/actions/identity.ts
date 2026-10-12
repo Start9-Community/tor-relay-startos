@@ -1,8 +1,8 @@
 import { storeJson } from '../fileModels/store.json'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
-import { readArchive, writeArchive } from '../utils/archive'
-import { installIdentity, readIdentity } from '../utils/identity'
+import { readArchive, writeArchive } from '../identity'
+import { installIdentity, readIdentity } from '../identity'
 
 const { InputSpec, Value } = sdk
 
@@ -44,13 +44,9 @@ export const importIdentity = sdk.Action.withInput(
   async () => null,
 
   async ({ input }) => {
-    let archive: Buffer
-    try {
-      archive = Buffer.from(input.archive.replace(/\s+/g, ''), 'base64')
-    } catch {
-      throw new Error(i18n('The archive is not valid base64.'))
-    }
-    const identity = readArchive(archive)
+    const identity = readArchive(
+      Buffer.from(input.archive.replace(/\s+/g, ''), 'base64'),
+    )
     await installIdentity(input.mode, identity)
     return {
       version: '1' as const,
@@ -105,6 +101,7 @@ export const exportIdentity = sdk.Action.withInput(
         value: writeArchive(identity).toString('base64'),
         masked: true,
         copyable: true,
+        qr: false,
         filename: `tor-${input.mode}-identity.tgz.b64`,
       },
     }

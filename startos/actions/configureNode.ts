@@ -90,7 +90,9 @@ export const configureNode = sdk.Action.withInput(
     description: i18n(
       'Choose relay or bridge mode, the nickname, and bandwidth limits.',
     ),
-    warning: null,
+    warning: i18n(
+      "Run this only somewhere that shares no power, internet connection or location with a server hosting onion services. If both can go offline together or share a connection, an attacker can link the onion address to this node's address.",
+    ),
     allowedStatuses: 'any',
     group: null,
     visibility: 'enabled',
