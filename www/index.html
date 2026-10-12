@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tor Node</title>
+    <title>Tor Relay</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <style>
       :root {
@@ -136,7 +136,7 @@
       <header>
         <img src="favicon.svg" alt="" />
         <div>
-          <h1 id="title">Tor Node</h1>
+          <h1 id="title">Tor Relay</h1>
           <div class="sub" id="subtitle">Loading…</div>
         </div>
       </header>
@@ -196,7 +196,7 @@
       }
       function render(s) {
         const t = s.tor
-        $('title').textContent = s.nickname || 'Tor Node'
+        $('title').textContent = s.nickname || 'Tor Relay'
         $('subtitle').textContent = t && t.version ? 'Tor ' + t.version : 'Tor'
         $('mode').textContent =
           s.mode === 'bridge'

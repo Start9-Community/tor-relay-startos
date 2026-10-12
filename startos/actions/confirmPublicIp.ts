@@ -2,7 +2,7 @@ import { storeJson } from '../fileModels/store.json'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
 import { isIpv4, isNonPublicIpv4 } from '../utils'
-import { orExposure } from '../utils/exposure'
+import { orExposure } from '../utils'
 
 const { InputSpec, Value } = sdk
 
@@ -93,7 +93,7 @@ export const confirmPublicIp = sdk.Action.withInput(
       version: '1' as const,
       title: i18n('Public IP Confirmed'),
       message: i18n(
-        'Tor Node will advertise ${ip}. Start the service if it is stopped.',
+        'Tor Relay will advertise ${ip}. Start the service if it is stopped.',
         {
           ip: input.ip,
         },

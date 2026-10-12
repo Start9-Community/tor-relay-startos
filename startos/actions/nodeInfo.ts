@@ -1,34 +1,23 @@
+import { T } from '@start9labs/start-sdk'
 import { storeJson } from '../fileModels/store.json'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
 import { obfs4Port } from '../utils'
-import { obfs4Exposure } from '../utils/exposure'
-import { readBridgeLine, readFingerprint } from '../utils/identity'
-
-type Member = {
-  type: 'single'
-  name: string
-  description: null
-  value: string
-  masked: false
-  copyable: true
-  qr: boolean
-  launchable?: boolean
-}
+import { readBridgeLine, readFingerprint } from '../identity'
 
 const single = (
   name: string,
   value: string,
-  extra: Partial<Member> = {},
-): Member => ({
+  extra: { qr?: boolean; launchable?: boolean } = {},
+): T.ActionResultMember => ({
   type: 'single',
   name,
   description: null,
   value,
   masked: false,
   copyable: true,
-  qr: false,
-  ...extra,
+  qr: extra.qr ?? false,
+  launchable: extra.launchable ?? null,
 })
 
 export const nodeInfo = sdk.Action.withoutInput(
@@ -45,7 +34,7 @@ export const nodeInfo = sdk.Action.withoutInput(
     visibility: 'enabled',
   }),
 
-  async ({ effects }) => {
+  async () => {
     const s = await storeJson.read().once()
     const mode = s?.mode ?? 'relay'
     const fingerprint = await readFingerprint(mode)
@@ -64,7 +53,7 @@ export const nodeInfo = sdk.Action.withoutInput(
       mode === 'bridge'
         ? await readFingerprint(mode, 'hashed-fingerprint')
         : fingerprint
-    const members: Member[] = [
+    const members = [
       single(
         i18n('Mode'),
         mode === 'bridge' ? i18n('obfs4 bridge') : i18n('Non-exit relay'),
@@ -86,8 +75,6 @@ export const nodeInfo = sdk.Action.withoutInput(
 
     if (mode === 'bridge') {
       const template = await readBridgeLine()
-      const exposure = await obfs4Exposure(effects).once()
-      const port = exposure?.assignedPort ?? obfs4Port
       if (template && s.confirmedIp)
         members.push(
           single(
@@ -95,7 +82,7 @@ export const nodeInfo = sdk.Action.withoutInput(
             template
               .replace('Bridge ', '')
               .replace('<IP ADDRESS>', s.confirmedIp)
-              .replace('<PORT>', String(port))
+              .replace('<PORT>', String(obfs4Port))
               .replace('<FINGERPRINT>', fingerprint),
             { qr: true },
           ),

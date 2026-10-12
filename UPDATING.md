@@ -14,6 +14,6 @@ Check the same packages under `aarch64` too; both architectures must carry the v
 ## Applying the bump
 
 1. Set `TOR_VERSION` and `LYREBIRD_VERSION` in `Dockerfile` to the exact Alpine versions, release suffix included (`0.4.9.14-r0`).
-2. In `startos/versions/current.ts`, set `version` to the Tor version as upstream, then `:0` (`0.4.9.15:0`). A wrapper-only change keeps the upstream part and increments the number after the colon. While the package is in beta, keep the `-beta.N` suffix on the upstream part and increment `N`; a stable `0.4.9.14:0` sorts above every `0.4.9.14-beta.N:M`, so beta iterations never use up release numbers.
+2. In `startos/versions/current.ts`, set `version` to the Tor version as upstream, then `:0` (`0.4.9.15:0`). A wrapper-only change keeps the upstream part and increments the number after the colon.
 3. Rewrite `releaseNotes` in all five locales.
 4. Build with `make`, sideload the `.s9pk`, and check the Tor health check reports the new version on the dashboard.

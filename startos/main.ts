@@ -4,16 +4,18 @@ import { storeJson } from './fileModels/store.json'
 import { i18n } from './i18n'
 import { sdk } from './sdk'
 import { dataMount, modeDir, uiPort } from './utils'
-import { NodeStatus, probe } from './utils/control'
-import { obfs4Exposure, orExposure } from './utils/exposure'
-import { blocker } from './utils/gate'
-import { renderTorrc } from './utils/torrc'
+import { NodeStatus, probe } from './control'
+import { obfs4Exposure, orExposure } from './utils'
+import { blocker } from './utils'
+import { renderTorrc } from './fileModels/torrc'
 
 /** Tor first warns of an unreachable ORPort this long after starting. */
 const SELF_TEST_MS = 20 * 60_000
+/** Tor drops an unreachable IPv6 ORPort only at a later 20-minute check, after IPv4 passes. */
+const SELF_TEST_WITH_IPV6_MS = 45 * 60_000
 
 export const main = sdk.setupMain(async ({ effects }) => {
-  console.info(i18n('Starting Tor Node!'))
+  console.info(i18n('Starting Tor Relay!'))
 
   const store = await storeJson.read().const(effects)
   const or = await orExposure(effects).const()
@@ -163,7 +165,10 @@ export const main = sdk.setupMain(async ({ effects }) => {
             }
           }
           unreachableSince ??= Date.now()
-          if (Date.now() - unreachableSince < SELF_TEST_MS)
+          if (
+            Date.now() - unreachableSince <
+            (latest.ipv6 ? SELF_TEST_WITH_IPV6_MS : SELF_TEST_MS)
+          )
             return {
               result: 'loading',
               message: i18n(

@@ -1,12 +1,10 @@
-# Tor Node
+# Tor Relay
 
-Tor Node runs Tor as a **non-exit relay** or an **obfs4 bridge**, never with onion services, and only on a public IPv4 you have confirmed.
+> **Run this only somewhere that shares no power, internet connection or location with a server hosting onion services** — not on your Tor service's server, and not on another server at the same site. If both can go offline together or share a connection, an attacker can link the onion address to this node's address.
 
 ## Documentation
 
-- [Tor relay guide](https://community.torproject.org/relay/) — what relays do and what running one involves
-- [Bridge setup](https://community.torproject.org/relay/setup/bridge/) — how bridges help censored users
-- [Tor Metrics relay search](https://metrics.torproject.org/rs.html) — look up your node by fingerprint
+- [Tor Relay Guide](https://community.torproject.org/relay/*) — the Tor Project's guide to running relays and bridges
 
 ## What you get on StartOS
 
@@ -22,29 +20,37 @@ A relay or bridge needs a public IPv4 that does not change. Behind CGNAT or DS-L
 1. Run **Configure Node**: pick relay or bridge, a nickname, contact info and bandwidth limits.
 2. Open **Interfaces → Tor ORPort** and enable exactly one public IPv4, for example through your StartTunnel gateway. In bridge mode, enable the same address on **obfs4 Bridge Port** too.
 3. Run **Confirm Public IP** and confirm the address is static.
-4. Start the service. After about 20 minutes the **Reachability** check turns green, and a few hours later the node appears on Tor Metrics. **Node Info** shows the fingerprint, the Metrics link and, in bridge mode, the bridge line.
+4. Start the service. After about 20 minutes the **Reachability** check turns green, and a few hours later the node appears on Tor Metrics.
 
-### Moving an existing relay here
+## Using Tor Relay
 
-Stop the old relay first. Then pack its two identity keys and paste them into **Import Identity** while the service is stopped:
+### Actions
+
+- **Node Info** — the fingerprint, the Tor Metrics link and, in bridge mode, the bridge line to share.
+- **Configure Node** — change mode, nickname, contact info or bandwidth. Each mode keeps its own identity, so switching back returns to the same fingerprint.
+- **Confirm Public IP** — asked for again whenever the public address changes; Tor stays stopped until you confirm the new one.
+- **Export Identity** / **Import Identity** — move a relay or bridge between servers with its fingerprint, and for a bridge its bridge line. Never run the same identity in two places at once.
+
+### Moving a relay from the Tor service
+
+If you ran a relay or bridge on the Tor service, its keys are still on your server. Import them into the mode you ran; a bridge gets a new obfs4 bridge line, since the Tor service's bridges had none. Over SSH, print them as one line to paste into **Import Identity**:
 
 ```
-tar czf tor-identity.tgz -C <old DataDirectory> keys/secret_id_key keys/ed25519_master_id_secret_key
-base64 -i tor-identity.tgz | pbcopy
+sudo tar czf - -C /media/startos/data/package-data/volumes/tor/data/tor keys/secret_id_key keys/ed25519_master_id_secret_key | base64 -w0
 ```
 
-### Moving a bridge
+### Moving a relay or bridge from another machine
 
-Export Identity in bridge mode includes obfs4's state, and Import Identity restores it. The bridge keeps both its fingerprint and its bridge line, so people who already use it can keep connecting.
+Stop the old node first. Then pack its identity from its Tor DataDirectory, adding `pt_state/obfs4_state.json` for a bridge, and paste the output into **Import Identity**:
+
+```
+tar czf - -C <DataDirectory> keys/secret_id_key keys/ed25519_master_id_secret_key | base64 -w0
+```
 
 ### After restoring from a backup
 
-StartOS does not restore which addresses are public. Open **Interfaces → Tor ORPort** (and **obfs4 Bridge Port** in bridge mode) and enable the public IPv4 again. If it is the address you confirmed before, the node starts without asking again.
+Open **Interfaces → Tor ORPort** (and **obfs4 Bridge Port** in bridge mode) and enable the public IPv4 again. If it is the address you confirmed before, the node starts without asking again.
 
-### When the public IP changes
+### Traffic limits
 
-Tor stops and a task asks you to **Confirm Public IP** again. It stays stopped until you do.
-
-### Using your Tor bandwidth wisely
-
-Each direction can use up to the bandwidth burst. Set a **Monthly Traffic Limit** if your VPS has a traffic quota.
+Set a **Monthly Traffic Limit** if your VPS has a traffic quota; Tor hibernates once it has used that much in either direction.

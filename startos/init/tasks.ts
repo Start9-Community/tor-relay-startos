@@ -3,9 +3,9 @@ import { confirmPublicIp } from '../actions/confirmPublicIp'
 import { storeJson } from '../fileModels/store.json'
 import { i18n } from '../i18n'
 import { sdk } from '../sdk'
-import { orExposure, singleIp } from '../utils/exposure'
+import { orExposure, singleIp } from '../utils'
 
-const confirmTaskId = 'tor-node:confirm-public-ip'
+const confirmTaskId = 'tor-relay:confirm-public-ip'
 
 /**
  * Both tasks are critical, so StartOS keeps the service stopped while either is open.
@@ -14,7 +14,7 @@ const confirmTaskId = 'tor-node:confirm-public-ip'
 export const watchTasks = sdk.setupOnInit(async (effects) => {
   const configured = await storeJson.read((s) => s.configured).const(effects)
   if (configured) {
-    await sdk.action.clearTask(effects, 'tor-node:configure-node')
+    await sdk.action.clearTask(effects, 'tor-relay:configure-node')
   } else {
     await sdk.action.createOwnTask(effects, configureNode, 'critical', {
       reason: i18n('Choose relay or bridge mode and name your node.'),
