@@ -77,6 +77,11 @@ export const main = sdk.setupMain(async ({ effects }) => {
     return daemons.addHealthCheck('setup', {
       ready: {
         display: i18n('Node Setup'),
+        // The result only changes when main restarts, so check once.
+        gracePeriod: 0,
+        trigger: async function* () {
+          yield
+        },
         fn: async (): Promise<HealthCheckResult> => ({
           result: 'failure',
           message: block ?? i18n('Run Configure Node first.'),
