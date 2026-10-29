@@ -1,6 +1,7 @@
 import type { HealthCheckResult } from '@start9labs/start-sdk/lib/health/checkFns/HealthCheckResult'
 import { statusFile, torrcFile } from './fileModels/torrc'
 import { storeJson } from './fileModels/store.json'
+import { HistoryRecorder } from './fileModels/history.json'
 import { i18n } from './i18n'
 import { sdk } from './sdk'
 import { dataMount, modeDir, uiPort } from './utils'
@@ -43,6 +44,9 @@ export const main = sdk.setupMain(async ({ effects }) => {
         nickname: store?.nickname ?? null,
         address: store?.confirmedIp ?? null,
         blocked: block,
+        /** KBytes/s per direction, as in the torrc. */
+        bandwidthRate: store?.bandwidthRate ?? null,
+        bandwidthBurst: store?.bandwidthBurst ?? null,
         tor: status,
       }),
     )
@@ -110,6 +114,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
 
   const dir = `${dataMount}/${modeDir(mode)}`
   let latest: NodeStatus | null = null
+  const history = new HistoryRecorder(effects)
   let unreachableSince: number | null = null
 
   return daemons
@@ -133,6 +138,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
         fn: async (): Promise<HealthCheckResult> => {
           latest = await probe(mode)
           await writeStatus(latest, null)
+          if (latest)
+            await history.sample(latest.bytesRead, latest.bytesWritten)
           if (!latest)
             return { result: 'starting', message: i18n('Waiting for Tor') }
           if ((latest.bootstrap ?? 0) < 100)

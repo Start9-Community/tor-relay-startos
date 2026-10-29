@@ -6,6 +6,8 @@ import { sdk } from './sdk'
 export const uiPort = 80
 export const orPort = 9001
 export const obfs4Port = 8443
+/** Tor's Prometheus endpoint, loopback only; read by `probe`. */
+export const metricsPort = 9035
 
 export const orHostId = 'or-multi'
 export const obfs4HostId = 'obfs4-multi'

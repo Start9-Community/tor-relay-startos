@@ -11,11 +11,15 @@
         --card: #ffffff;
         --ink: #1d1a24;
         --muted: #6b6578;
+        --faint: #b9b2c4;
         --line: #e4e0ea;
         --accent: #6b3fa0;
+        --accent2: #0f766e;
+        --track: #ece8f2;
         --ok: #1f7a4d;
         --warn: #a15c00;
         --bad: #b3261e;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       }
       @media (prefers-color-scheme: dark) {
         :root {
@@ -23,8 +27,11 @@
           --card: #1d1a23;
           --ink: #ece8f2;
           --muted: #9d96aa;
+          --faint: #4a4454;
           --line: #2e2a36;
           --accent: #b48ee6;
+          --accent2: #5ccfc0;
+          --track: #2e2a36;
           --ok: #5cc98f;
           --warn: #e6a23c;
           --bad: #f2867d;
@@ -38,52 +45,42 @@
         background: var(--bg);
         color: var(--ink);
         font:
-          15px/1.5 ui-sans-serif,
+          14px/1.45 ui-sans-serif,
           system-ui,
           -apple-system,
           'Segoe UI',
           sans-serif;
       }
       main {
-        max-width: 760px;
+        max-width: 1120px;
         margin: 0 auto;
-        padding: 32px 16px 48px;
+        padding: 24px 16px 40px;
       }
       header {
         display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 20px;
-      }
-      header img {
-        width: 36px;
-        height: 36px;
-      }
-      h1 {
-        font-size: 22px;
-        margin: 0;
-        letter-spacing: -0.01em;
-      }
-      .sub {
-        color: var(--muted);
-        font-size: 13px;
-      }
-      .status {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 14px 16px;
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 12px;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 4px 12px;
         margin-bottom: 16px;
       }
+      h1 {
+        margin: 0;
+        font: 700 17px var(--mono);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      header .sub {
+        font: 12px var(--mono);
+        color: var(--muted);
+      }
       .dot {
-        width: 10px;
-        height: 10px;
+        display: inline-block;
+        width: 9px;
+        height: 9px;
         border-radius: 50%;
-        flex: none;
         background: var(--muted);
+        align-self: center;
       }
       .dot.ok {
         background: var(--ok);
@@ -96,87 +93,472 @@
       }
       .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
         gap: 12px;
+        margin-bottom: 12px;
+      }
+      .caprow {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .stack {
+        display: grid;
+        gap: 12px;
+        grid-auto-rows: 1fr;
+      }
+      @media (max-width: 640px) {
+        .caprow {
+          grid-template-columns: 1fr;
+        }
+        .stack {
+          grid-auto-rows: auto;
+        }
       }
       .card {
         background: var(--card);
         border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 14px 16px;
+        border-left: 3px solid var(--rail, var(--accent));
+        border-radius: 8px;
+        padding: 12px 14px;
         min-width: 0;
       }
+      .card.alt {
+        --rail: var(--accent2);
+      }
+      .card.mini {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 10px 14px;
+      }
       .label {
-        color: var(--muted);
-        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        font: 600 10.5px/1 var(--mono);
+        letter-spacing: 0.12em;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      .label i {
+        font-style: normal;
+        color: var(--faint);
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 4px 10px;
       }
       .value {
-        font-size: 20px;
-        font-weight: 600;
-        margin-top: 2px;
+        font: 700 20px/1.15 var(--mono);
         font-variant-numeric: tabular-nums;
         overflow-wrap: anywhere;
       }
-      .value.small {
-        font-size: 14px;
-        font-weight: 500;
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      .value.big {
+        font-size: 26px;
+      }
+      .value.ok {
+        color: var(--ok);
+      }
+      .value.warn {
+        color: var(--warn);
+      }
+      .value.bad {
+        color: var(--bad);
+      }
+      .value small {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 600;
+        margin-left: 2px;
+      }
+      .meta,
+      .hint {
+        font: 11.5px var(--mono);
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      .row .meta {
+        margin: 0;
+      }
+      .dirs {
+        font: 12px var(--mono);
+        font-variant-numeric: tabular-nums;
+        margin-top: 4px;
+      }
+      .rx {
+        color: var(--accent);
+      }
+      .tx {
+        color: var(--accent2);
+      }
+      .up {
+        color: var(--ok);
+      }
+      .down {
+        color: var(--warn);
+      }
+      svg.spark {
+        display: block;
+        width: 100%;
+        height: 28px;
+        margin-top: 8px;
+      }
+      .gauge {
+        position: relative;
+        max-width: 320px;
+        margin: 4px auto 0;
+      }
+      .gauge svg {
+        display: block;
+        width: 100%;
+      }
+      .gauge .pct {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 14%;
+        text-align: center;
+        font: 700 40px var(--mono);
+        font-variant-numeric: tabular-nums;
+      }
+      .gauge .ends {
+        display: flex;
+        justify-content: space-between;
+        font: 600 13px var(--mono);
+        color: var(--muted);
+        padding: 0 4%;
+      }
+      .gmeta {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 4px 12px;
+        margin-top: 10px;
+        font: 11.5px var(--mono);
+        color: var(--muted);
+      }
+      .gword::before {
+        content: '●';
+        margin-right: 6px;
+      }
+      .chip {
+        display: inline-block;
+        font: 600 11px/1.7 var(--mono);
+        padding: 0 7px;
+        margin: 2px 4px 2px 0;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        color: var(--accent);
+      }
+      .panel {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 14px;
+        margin-bottom: 12px;
+        min-width: 0;
+      }
+      .phead {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 6px 12px;
+        margin-bottom: 10px;
+      }
+      .ptitle {
+        font: 600 11px var(--mono);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .ptitle::before {
+        content: '▸';
+        color: var(--accent);
+        margin-right: 6px;
+      }
+      .pmeta {
+        font: 11px var(--mono);
+        color: var(--muted);
+      }
+      .tabs {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+      .tabs button {
+        font: 600 10.5px var(--mono);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 5px 10px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+      }
+      .tabs button[aria-pressed='true'] {
+        color: var(--ink);
+        border-color: var(--accent);
+        box-shadow: inset 0 -2px 0 var(--accent);
+      }
+      svg.bars {
+        display: block;
+        width: 100%;
+        height: 200px;
+      }
+      .axis {
+        display: flex;
+        justify-content: space-between;
+        font: 11px var(--mono);
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      .legend {
+        display: flex;
+        gap: 14px;
+        font: 11px var(--mono);
+        color: var(--muted);
+        margin-top: 6px;
+      }
+      .legend i {
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        margin-right: 5px;
+        vertical-align: -1px;
+      }
+      .rows .row {
+        padding: 7px 0;
+        border-bottom: 1px solid var(--line);
+        font: 12.5px var(--mono);
+      }
+      .rows .row:last-child {
+        border-bottom: 0;
+      }
+      .rows .n {
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+      }
+      .rows .n.hit {
+        color: var(--warn);
+      }
+      [hidden] {
+        display: none !important;
       }
       footer {
+        font: 11px var(--mono);
         color: var(--muted);
-        font-size: 12px;
-        margin-top: 18px;
+        margin-top: 16px;
       }
     </style>
   </head>
   <body>
     <main>
       <header>
-        <img src="favicon.svg" alt="" />
-        <div>
-          <h1 id="title">Tor Relay</h1>
-          <div class="sub" id="subtitle">Loading…</div>
-        </div>
+        <span class="dot" id="dot"></span>
+        <h1>Tor Relay</h1>
+        <span class="sub" id="subtitle">Loading…</span>
       </header>
-
-      <div class="status">
-        <span class="dot" id="dot"></span
-        ><span id="state">Waiting for status</span>
-      </div>
 
       <div class="grid">
         <div class="card">
-          <div class="label">Mode</div>
-          <div class="value" id="mode">–</div>
+          <div class="label">Bandwidth · 24h <i>01</i></div>
+          <div class="value big" id="t24">–</div>
+          <div class="meta" id="t24-cmp"></div>
+          <div class="dirs" id="t24-dirs"></div>
+          <svg
+            class="spark"
+            id="t24-spark"
+            viewBox="0 0 100 28"
+            preserveAspectRatio="none"
+          ></svg>
         </div>
         <div class="card">
-          <div class="label">Public IPv4</div>
-          <div class="value small" id="address">–</div>
+          <div class="label">Bandwidth · 7d <i>02</i></div>
+          <div class="value big" id="t7">–</div>
+          <div class="meta" id="t7-cmp"></div>
+          <div class="dirs" id="t7-dirs"></div>
+          <svg
+            class="spark"
+            id="t7-spark"
+            viewBox="0 0 100 28"
+            preserveAspectRatio="none"
+          ></svg>
         </div>
-        <div class="card">
-          <div class="label">Uptime</div>
-          <div class="value" id="uptime">–</div>
+        <div class="card alt">
+          <div class="label">Avg / day · 7d <i>03</i></div>
+          <div class="value big" id="avg">–</div>
+          <div class="meta" id="avg-hint"></div>
+          <div class="dirs" id="avg-dirs"></div>
         </div>
-        <div class="card">
-          <div class="label">Received</div>
-          <div class="value" id="read">–</div>
-        </div>
-        <div class="card">
-          <div class="label">Sent</div>
-          <div class="value" id="written">–</div>
-        </div>
-        <div class="card">
-          <div class="label">Monthly limit</div>
-          <div class="value small" id="accounting">–</div>
+        <div class="card alt">
+          <div class="label">All-time <i>04</i></div>
+          <div class="value big" id="all">–</div>
+          <div class="meta" id="all-since"></div>
+          <div class="dirs" id="all-dirs"></div>
+          <svg
+            class="spark"
+            id="all-spark"
+            viewBox="0 0 100 28"
+            preserveAspectRatio="none"
+          ></svg>
         </div>
       </div>
+
+      <div class="caprow">
+        <div class="card">
+          <div class="label">Bandwidth limit · now <i>G1</i></div>
+          <div class="gauge">
+            <svg viewBox="0 0 120 68" aria-hidden="true">
+              <path
+                d="M12 62 A48 48 0 0 1 108 62"
+                fill="none"
+                stroke="var(--track)"
+                stroke-width="11"
+                stroke-linecap="round"
+              />
+              <path
+                id="gauge-fill"
+                d="M12 62 A48 48 0 0 1 108 62"
+                fill="none"
+                stroke="var(--ok)"
+                stroke-width="11"
+                stroke-linecap="round"
+                pathLength="100"
+                stroke-dasharray="0 200"
+                opacity="0"
+              />
+              <line
+                id="gauge-peak"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="0"
+                stroke="var(--ink)"
+                stroke-width="2"
+                stroke-linecap="round"
+                opacity="0"
+              />
+            </svg>
+            <div class="pct" id="gauge-pct">–</div>
+            <div class="ends"><span>0</span><span>100</span></div>
+          </div>
+          <div class="gmeta">
+            <span class="gword" id="gauge-word">measuring</span>
+            <span id="gauge-now"></span>
+          </div>
+          <div class="meta" id="gauge-hint"></div>
+        </div>
+        <div class="stack">
+          <div class="card mini">
+            <div class="label">Status <i>05</i></div>
+            <div class="row">
+              <span class="value" id="state">Waiting for status</span
+              ><span class="meta" id="boot"></span>
+            </div>
+          </div>
+          <div class="card mini">
+            <div class="label">Current rate <i>06</i></div>
+            <div class="dirs" id="rate">measuring…</div>
+          </div>
+          <div class="card mini">
+            <div class="label">Uptime <i>07</i></div>
+            <div class="row">
+              <span class="value" id="uptime">–</span
+              ><span class="meta" id="starts"></span>
+            </div>
+          </div>
+          <div class="card mini alt">
+            <div class="label">Node <i>08</i></div>
+            <div class="row">
+              <span class="value" id="mode">–</span
+              ><span class="meta" id="address">–</span>
+            </div>
+            <div class="meta" id="accounting"></div>
+          </div>
+        </div>
+      </div>
+
+      <section id="history-section" class="panel" hidden>
+        <div class="phead">
+          <div class="ptitle">History</div>
+          <div class="pmeta">
+            local time · stacked <span class="rx">↓ received</span> /
+            <span class="tx">↑ sent</span>
+          </div>
+        </div>
+        <div class="tabs" role="group" aria-label="History range">
+          <button data-range="daily" aria-pressed="true">Daily</button>
+          <button data-range="weekly" aria-pressed="false">Weekly</button>
+          <button data-range="monthly" aria-pressed="false">Monthly</button>
+        </div>
+        <svg
+          class="bars"
+          id="bars"
+          viewBox="0 0 300 180"
+          preserveAspectRatio="none"
+        ></svg>
+        <div class="axis">
+          <span id="axis-from"></span><span id="axis-max"></span
+          ><span id="axis-to"></span>
+        </div>
+      </section>
+
+      <div class="grid" id="network" hidden>
+        <div class="card mini">
+          <div class="label">Consensus flags <i>09</i></div>
+          <div id="flags"></div>
+        </div>
+        <div class="card mini">
+          <div class="label">Consensus weight <i>10</i></div>
+          <div class="value" id="weight">–</div>
+        </div>
+      </div>
+
+      <div class="grid" id="load" hidden>
+        <div class="card mini alt">
+          <div class="label">Circuits open <i>11</i></div>
+          <div class="value" id="circuits">–</div>
+        </div>
+        <div class="card mini alt">
+          <div class="label">Relay connections <i>12</i></div>
+          <div class="row">
+            <span class="value" id="orconns">–</span
+            ><span class="meta" id="orconns-hint"></span>
+          </div>
+        </div>
+        <div class="card mini alt">
+          <div class="label">Circuit handshakes <i>13</i></div>
+          <div class="row">
+            <span class="value" id="onionskins">–</span
+            ><span class="meta" id="onionskins-hint"></span>
+          </div>
+        </div>
+        <div class="card mini alt">
+          <div class="label">Directory requests <i>14</i></div>
+          <div class="value" id="dirreq">–</div>
+        </div>
+      </div>
+
+      <section id="dos-section" class="panel" hidden>
+        <div class="phead">
+          <div class="ptitle">DoS defenses and overload</div>
+          <div class="pmeta">since Tor started · above zero in amber</div>
+        </div>
+        <div class="rows" id="dos"></div>
+      </section>
 
       <footer id="footer"></footer>
     </main>
     <script>
       const $ = (id) => document.getElementById(id)
+      const HOUR = 3600e3
+      const DAY = 24 * HOUR
       const bytes = (n) => {
         if (n == null) return '–'
         const u = ['B', 'KB', 'MB', 'GB', 'TB']
@@ -185,8 +567,11 @@
           n /= 1024
           i++
         }
-        return n.toFixed(i ? 1 : 0) + ' ' + u[i]
+        return n.toFixed(i ? (n < 10 ? 2 : 1) : 0) + ' ' + u[i]
       }
+      const count = (n) => (n == null ? '–' : n.toLocaleString())
+      const esc = (s) =>
+        String(s).replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`)
       const duration = (s) => {
         if (s == null) return '–'
         const d = Math.floor(s / 86400),
@@ -194,10 +579,308 @@
           m = Math.floor((s % 3600) / 60)
         return d ? `${d}d ${h}h` : h ? `${h}h ${m}m` : `${m}m`
       }
+      const dirs = (read, written) =>
+        `<span class="rx">↓ ${bytes(read)}</span> &nbsp; <span class="tx">↑ ${bytes(written)}</span>`
+
+      const DOS = {
+        circuit_rejected: 'Circuits rejected',
+        circuit_killed_max_cell: 'Circuits killed (cell queue)',
+        circuit_killed_max_cell_outq: 'Circuits killed (outbound queue)',
+        marked_address: 'Addresses marked',
+        marked_address_maxq: 'Addresses marked (queue)',
+        conn_rejected: 'Connections rejected',
+        concurrent_conn_rejected: 'Concurrent connections rejected',
+        single_hop_refused: 'Single-hop clients refused',
+        introduce2_rejected: 'INTRODUCE2 rejected',
+        stream_rejected: 'Streams rejected',
+        begindir_rate_rejected: 'Directory requests rate-limited',
+        begindir_rejected: 'Extra directory requests refused',
+        begindir_hsdir_rejected: 'Extra onion descriptor requests refused',
+      }
+      const row = (label, n, shown = count(n)) =>
+        `<div class="row"><span>${esc(label)}</span><span class="n${n ? ' hit' : ''}">${shown}</span></div>`
+
+      let status = null
+      let history = null
+      let range = 'daily'
+      let prev = null
+      let rates = null
+
+      /** Per-direction bytes/s from two consecutive status samples. */
+      function sampleRate(s) {
+        const t = s.tor
+        if (!t || t.bytesRead == null || t.bytesWritten == null) return
+        const now = {
+          at: Date.parse(s.updated),
+          r: t.bytesRead,
+          w: t.bytesWritten,
+        }
+        const last = prev
+        prev = now
+        if (!last || now.at <= last.at || now.r < last.r || now.w < last.w)
+          return
+        const dt = (now.at - last.at) / 1000
+        rates = { read: (now.r - last.r) / dt, written: (now.w - last.w) / dt }
+      }
+
+      const sum = (list, from, to = Infinity) =>
+        list
+          .filter((b) => b.t >= from && b.t < to)
+          .reduce(
+            (a, b) => ({
+              read: a.read + b.read,
+              written: a.written + b.written,
+              peak: Math.max(a.peak, b.peak),
+            }),
+            { read: 0, written: 0, peak: 0 },
+          )
+
+      function spark(id, values) {
+        const el = $(id)
+        if (values.length < 2) return (el.innerHTML = '')
+        const max = Math.max(...values, 1)
+        const pts = values.map(
+          (v, i) =>
+            `${((i / (values.length - 1)) * 100).toFixed(2)},${(26 - (v / max) * 24).toFixed(2)}`,
+        )
+        el.innerHTML =
+          `<polygon points="0,28 ${pts.join(' ')} 100,28" fill="var(--accent)" opacity="0.12" />` +
+          `<polyline points="${pts.join(' ')}" fill="none" stroke="var(--accent)" stroke-width="1.5" vector-effect="non-scaling-stroke" />`
+      }
+
+      function compare(id, now, before) {
+        const el = $(id)
+        if (!before) return (el.textContent = 'no earlier period yet')
+        const pct = ((now - before) / before) * 100
+        el.innerHTML = `<span class="${pct >= 0 ? 'up' : 'down'}">${pct >= 0 ? '▲' : '▼'} ${Math.abs(pct).toFixed(0)}%</span> vs previous`
+      }
+
+      function hourlySeries(from, step) {
+        const out = []
+        for (let t = from; t < Date.now(); t += step) {
+          const b = sum(history.hourly, t, t + step)
+          out.push(b.read + b.written)
+        }
+        return out
+      }
+
+      function renderTraffic() {
+        const h = history
+        const now = Date.now()
+        const d24 = sum(h.hourly, now - DAY)
+        const p24 = sum(h.hourly, now - 2 * DAY, now - DAY)
+        const d7 = sum(h.hourly, now - 7 * DAY)
+        const p7 = sum(h.hourly, now - 14 * DAY, now - 7 * DAY)
+        const all = h.total ?? sum(h.daily, 0)
+
+        $('t24').textContent = bytes(d24.read + d24.written)
+        $('t24-dirs').innerHTML = dirs(d24.read, d24.written)
+        compare('t24-cmp', d24.read + d24.written, p24.read + p24.written)
+        spark('t24-spark', hourlySeries(now - DAY, HOUR))
+
+        $('t7').textContent = bytes(d7.read + d7.written)
+        $('t7-dirs').innerHTML = dirs(d7.read, d7.written)
+        compare('t7-cmp', d7.read + d7.written, p7.read + p7.written)
+        spark('t7-spark', hourlySeries(now - 7 * DAY, 6 * HOUR))
+
+        const days = Math.min(7, Math.max(1, (now - h.since) / DAY))
+        $('avg').textContent = bytes((d7.read + d7.written) / days)
+        $('avg-dirs').innerHTML = dirs(d7.read / days, d7.written / days)
+        $('avg-hint').textContent =
+          days < 7
+            ? `over ${days.toFixed(1)} days recorded`
+            : 'over the last 7 days'
+
+        $('all').textContent = bytes(all.read + all.written)
+        $('all-dirs').innerHTML = dirs(all.read, all.written)
+        $('all-since').textContent =
+          'since ' + new Date(h.since).toLocaleDateString()
+        // Start from what pruned days contributed, so the line ends at the card's total
+        const kept = sum(h.daily, 0)
+        let run = all.read + all.written - (kept.read + kept.written)
+        spark(
+          'all-spark',
+          h.daily.map((b) => (run += b.read + b.written)),
+        )
+
+        $('starts').textContent = `${count(h.starts)} Tor starts recorded`
+        renderGauge(d24)
+        renderBars()
+      }
+
+      function renderGauge(d24) {
+        const s = status
+        const limit = s && s.bandwidthRate ? s.bandwidthRate * 1024 : null
+        if (!limit) return
+        const busier = rates ? Math.max(rates.read, rates.written) : null
+        const pct =
+          busier == null ? null : Math.min(100, (busier / limit) * 100)
+        const fill = $('gauge-fill')
+        fill.setAttribute('stroke-dasharray', `${pct ?? 0} 200`)
+        fill.setAttribute('opacity', pct ? '1' : '0')
+        fill.setAttribute(
+          'stroke',
+          pct == null || pct < 75
+            ? 'var(--ok)'
+            : pct < 95
+              ? 'var(--warn)'
+              : 'var(--bad)',
+        )
+        $('gauge-pct').textContent = pct == null ? '–' : pct.toFixed(0) + '%'
+        const word = $('gauge-word')
+        word.textContent =
+          pct == null
+            ? 'measuring'
+            : pct < 75
+              ? 'headroom'
+              : pct < 95
+                ? 'busy'
+                : 'at limit'
+        word.style.color = pct == null ? '' : fill.getAttribute('stroke')
+        $('gauge-now').textContent =
+          busier == null ? '' : `${bytes(busier)}/s of ${bytes(limit)}/s`
+        if (!d24) return
+        const elapsed = Math.min(DAY, Date.now() - history.since) / 1000
+        const avg = Math.max(d24.read, d24.written) / elapsed
+        const peak = Math.min(100, (d24.peak / limit) * 100)
+        // Tick on the arc at the 24 h peak.
+        const a = Math.PI * (1 - peak / 100)
+        const tick = $('gauge-peak')
+        tick.setAttribute('x1', (60 + 40 * Math.cos(a)).toFixed(2))
+        tick.setAttribute('y1', (62 - 40 * Math.sin(a)).toFixed(2))
+        tick.setAttribute('x2', (60 + 56 * Math.cos(a)).toFixed(2))
+        tick.setAttribute('y2', (62 - 56 * Math.sin(a)).toFixed(2))
+        tick.setAttribute('opacity', d24.peak ? '0.8' : '0')
+        $('gauge-hint').textContent =
+          `peak 24h ${peak.toFixed(0)}% · avg ${((avg / limit) * 100).toFixed(0)}% · busier direction · burst ${bytes(s.bandwidthBurst * 1024)}/s`
+      }
+
+      function groups() {
+        const h = history
+        const map = new Map()
+        const put = (key, label, b) => {
+          const g = map.get(key) ?? { label, read: 0, written: 0 }
+          g.read += b.read
+          g.written += b.written
+          map.set(key, g)
+        }
+        if (range === 'daily') {
+          const from = Date.now() - 30 * DAY
+          for (const b of h.hourly.filter((b) => b.t >= from)) {
+            const d = new Date(b.t)
+            put(
+              d.toDateString(),
+              d.toLocaleDateString(undefined, {
+                month: 'short',
+                day: 'numeric',
+              }),
+              b,
+            )
+          }
+        } else if (range === 'weekly') {
+          const from = Date.now() - 12 * 7 * DAY
+          for (const b of h.daily.filter((b) => b.t >= from)) {
+            const d = new Date(b.t)
+            const monday = new Date(b.t - ((d.getUTCDay() + 6) % 7) * DAY)
+            put(
+              monday.toISOString().slice(0, 10),
+              'week of ' +
+                monday.toLocaleDateString(undefined, {
+                  month: 'short',
+                  day: 'numeric',
+                }),
+              b,
+            )
+          }
+        } else {
+          for (const b of h.daily) {
+            const d = new Date(b.t)
+            put(
+              d.toISOString().slice(0, 7),
+              d.toLocaleDateString(undefined, {
+                month: 'short',
+                year: 'numeric',
+                timeZone: 'UTC',
+              }),
+              b,
+            )
+          }
+        }
+        return [...map.values()].slice(-31)
+      }
+
+      function renderBars() {
+        const list = groups()
+        const svg = $('bars')
+        if (!list.length) return (svg.innerHTML = '')
+        const max = Math.max(...list.map((g) => g.read + g.written), 1)
+        const w = 300 / list.length
+        const gap = Math.min(4, w * 0.2)
+        svg.innerHTML = list
+          .map((g, i) => {
+            const hr = (g.read / max) * 176
+            const hw = (g.written / max) * 176
+            const x = (i * w + gap / 2).toFixed(2)
+            const bw = (w - gap).toFixed(2)
+            return (
+              `<g><title>${esc(g.label)}: ↓ ${bytes(g.read)} · ↑ ${bytes(g.written)}</title>` +
+              `<rect x="${x}" y="${(180 - hr).toFixed(2)}" width="${bw}" height="${hr.toFixed(2)}" fill="var(--accent)" />` +
+              `<rect x="${x}" y="${(180 - hr - hw).toFixed(2)}" width="${bw}" height="${hw.toFixed(2)}" fill="var(--accent2)" /></g>`
+            )
+          })
+          .join('')
+        $('axis-from').textContent = list[0].label
+        $('axis-to').textContent =
+          list.length > 1 ? list[list.length - 1].label : ''
+        $('axis-max').textContent = 'max ' + bytes(max)
+      }
+
+      function renderDetails(t) {
+        const c = t && t.consensus
+        $('network').hidden = !c
+        if (c) {
+          $('flags').innerHTML = c.flags.length
+            ? c.flags.map((f) => `<span class="chip">${esc(f)}</span>`).join('')
+            : '<span class="hint">None yet</span>'
+          $('weight').textContent = count(c.weight)
+        }
+        const l = t && t.load
+        $('load').hidden = !l
+        if (l) {
+          $('circuits').textContent = count(l.circuits)
+          $('orconns').textContent = count(
+            l.orConnectionsIn + l.orConnectionsOut,
+          )
+          $('orconns-hint').textContent =
+            `${count(l.orConnectionsIn)} in · ${count(l.orConnectionsOut)} out · ${count(l.orConnectionsRejected)} rejected`
+          $('onionskins').textContent = count(l.onionskinsProcessed)
+          $('onionskins-hint').textContent =
+            `${count(l.onionskinsDropped)} dropped`
+          $('dirreq').textContent = count(l.dirRequests)
+        }
+        const d = t && t.dos
+        $('dos-section').hidden = !d
+        if (d) {
+          const rows = Object.keys(d).map((k) => row(DOS[k] || k, d[k]))
+          if (l)
+            rows.push(
+              row('Memory freed under pressure', l.oomBytes, bytes(l.oomBytes)),
+              row('Bandwidth limit reached', l.rateLimitReached),
+              row('Out of TCP ports', l.tcpExhaustion),
+            )
+          $('dos').innerHTML = rows.join('')
+        }
+      }
+
       function render(s) {
         const t = s.tor
-        $('title').textContent = s.nickname || 'Tor Relay'
-        $('subtitle').textContent = t && t.version ? 'Tor ' + t.version : 'Tor'
+        $('subtitle').textContent = [
+          s.nickname,
+          t && t.version && 'Tor ' + t.version,
+          'tor-relay',
+        ]
+          .filter(Boolean)
+          .join(' · ')
         $('mode').textContent =
           s.mode === 'bridge'
             ? 'obfs4 bridge'
@@ -206,41 +889,70 @@
               : '–'
         $('address').textContent = s.address || '–'
         let cls = 'warn',
-          msg
+          msg,
+          note = t ? `bootstrap ${t.bootstrap ?? 0}%` : ''
         if (s.blocked) {
           cls = 'bad'
-          msg = s.blocked
-        } else if (!t) msg = 'Waiting for Tor'
-        else if ((t.bootstrap ?? 0) < 100)
-          msg = `Bootstrapping ${t.bootstrap ?? 0}%`
+          msg = 'blocked'
+          note = s.blocked
+        } else if (!t) msg = 'waiting for Tor'
+        else if ((t.bootstrap ?? 0) < 100) msg = 'bootstrapping'
         else if (t.reachable && t.published) {
           cls = 'ok'
-          msg = 'Reachable and published'
-        } else msg = 'Connected; testing reachability'
+          msg = 'reachable · published'
+        } else msg = 'testing reachability'
         $('dot').className = 'dot ' + cls
         $('state').textContent = msg
+        $('state').className = 'value ' + cls
+        $('boot').textContent = note
         $('uptime').textContent = duration(t && t.uptimeSeconds)
-        $('read').textContent = bytes(t && t.bytesRead)
-        $('written').textContent = bytes(t && t.bytesWritten)
+        $('rate').innerHTML = rates
+          ? `<span class="rx">↓ ${bytes(rates.read)}/s</span> &nbsp; <span class="tx">↑ ${bytes(rates.written)}/s</span>`
+          : 'measuring…'
         $('accounting').textContent =
           t && t.accountingEnabled
-            ? `${(t.accountingBytes || '').split(' ').map(Number).map(bytes).join(' / ')} until ${t.accountingIntervalEnd || '?'}`
-            : 'Off'
+            ? `monthly limit ${(t.accountingBytes || '').split(' ').map(Number).map(bytes).join(' / ')} until ${t.accountingIntervalEnd || '?'}`
+            : 'monthly limit off'
+        renderDetails(t)
         $('footer').textContent =
           'Updated ' +
           new Date(s.updated).toLocaleString() +
-          '. Counters reset when Tor restarts.'
+          '. Load and DoS counters reset when Tor restarts; traffic history is kept.'
       }
-      async function refresh() {
+
+      async function load(path) {
         try {
-          const r = await fetch('status.json', { cache: 'no-store' })
-          if (r.ok) render(await r.json())
+          const r = await fetch(path, { cache: 'no-store' })
+          return r.ok ? await r.json() : null
         } catch (e) {
-          $('state').textContent = 'Status unavailable'
+          return null
         }
       }
-      refresh()
+      async function refresh() {
+        const s = await load('status.json')
+        if (!s) return ($('state').textContent = 'Status unavailable')
+        status = s
+        sampleRate(s)
+        render(s)
+        renderGauge(null)
+      }
+      async function refreshHistory() {
+        const h = await load('history.json')
+        if (!h || !h.since) return
+        history = h
+        $('history-section').hidden = false
+        renderTraffic()
+      }
+      for (const b of document.querySelectorAll('.tabs button'))
+        b.addEventListener('click', () => {
+          range = b.dataset.range
+          for (const o of document.querySelectorAll('.tabs button'))
+            o.setAttribute('aria-pressed', String(o === b))
+          if (history) renderBars()
+        })
+      refresh().then(refreshHistory)
       setInterval(refresh, 15000)
+      setInterval(refreshHistory, 60000)
     </script>
   </body>
 </html>

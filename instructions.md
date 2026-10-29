@@ -8,7 +8,7 @@
 
 ## What you get on StartOS
 
-- **Dashboard** — mode, public address, reachability and traffic.
+- **Dashboard** — reachability, traffic over the last day, week and since install, use of your bandwidth limit, consensus flags and weight, current load, and how often Tor's DoS defenses have acted. Traffic history is kept across restarts; the load and DoS counters start over each time Tor restarts.
 - **Tor ORPort** interface (TCP 9001) — where the Tor network reaches the node.
 - **obfs4 Bridge Port** interface (TCP 8443) — where censored users reach the node in bridge mode.
 - A separate identity for each mode. Switching between relay and bridge never exposes one identity as the other.

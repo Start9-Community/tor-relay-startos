@@ -3,6 +3,7 @@ import { sdk } from '../sdk'
 import {
   dataMount,
   lyrebirdPath,
+  metricsPort,
   Mode,
   modeDir,
   obfs4Port,
@@ -47,6 +48,8 @@ export function renderTorrc(c: TorrcInput): string {
     `DataDirectory ${dir}`,
     `ControlSocket ${dir}/control.sock`,
     'SocksPort 0',
+    `MetricsPort 127.0.0.1:${metricsPort}`,
+    'MetricsPortPolicy accept 127.0.0.1',
     'Log notice stdout',
     '',
     `Nickname ${c.nickname}`,
