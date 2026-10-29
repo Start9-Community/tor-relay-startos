@@ -48,14 +48,14 @@ The `tor` health check polls Tor every 30 seconds over the control socket and To
 
 Everything lives on the single `main` volume, mounted at `/data`. Each mode has its own DataDirectory and therefore its own identity.
 
-| Path           | Contents                                                                                                                          |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `store.json`   | Package settings (see File Models)                                                                                                |
-| `torrc`        | Rendered on every start                                                                                                           |
-| `status.json`  | Written every health-check cycle; read by the dashboard                                                                           |
-| `history.json` | Hourly (31 days) and daily (3 years) traffic totals and Tor start count; saved every 5 minutes, so a stop loses at most 5 minutes |
-| `relay/`       | Tor DataDirectory and identity for relay mode                                                                                     |
-| `bridge/`      | Tor DataDirectory and identity for bridge mode, including `pt_state/` for obfs4                                                   |
+| Path           | Contents                                                                                                                                             |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `store.json`   | Package settings (see File Models)                                                                                                                   |
+| `torrc`        | Rendered on every start                                                                                                                              |
+| `status.json`  | Written every health-check cycle; read by the dashboard                                                                                              |
+| `history.json` | Lifetime traffic totals, hourly (31 days) and daily (3 years) buckets, and Tor start count; saved every 5 minutes, so a stop loses at most 5 minutes |
+| `relay/`       | Tor DataDirectory and identity for relay mode                                                                                                        |
+| `bridge/`      | Tor DataDirectory and identity for bridge mode, including `pt_state/` for obfs4                                                                      |
 
 ## File Models
 

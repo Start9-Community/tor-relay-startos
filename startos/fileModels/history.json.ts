@@ -5,7 +5,7 @@ const HOUR = 3_600_000
 const DAY = 24 * HOUR
 /** Hourly buckets feed the 24 h and 7 d figures and the daily chart. */
 const KEEP_HOURLY = 31 * DAY
-/** Daily buckets feed the weekly and monthly charts and the all-time total. */
+/** Daily buckets feed the weekly and monthly charts. */
 const KEEP_DAILY = 3 * 366 * DAY
 /** A stopped service loses at most this much unsaved traffic. */
 const FLUSH_MS = 5 * 60_000
@@ -24,6 +24,10 @@ const shape = z.looseObject({
   since: z.number().nullable().catch(null),
   /** How many times Tor has started since `since`. */
   starts: z.number().catch(0),
+  total: z
+    .looseObject({ read: z.number(), written: z.number() })
+    .nullable()
+    .catch(null),
   hourly: z.array(bucket).catch([]),
   daily: z.array(bucket).catch([]),
 })
@@ -68,12 +72,15 @@ export class HistoryRecorder {
   async sample(read: number | null, written: number | null) {
     if (read === null || written === null) return
     const at = Date.now()
-    const h = (this.history ??= (await historyJson.read().once()) ?? {
-      since: null,
-      starts: 0,
-      hourly: [],
-      daily: [],
-    })
+    const h = (this.history ??=
+      (await historyJson.read().once()) ?? shape.parse({}))
+    const total = (h.total ??= h.daily.reduce(
+      (sum, b) => ({
+        read: sum.read + b.read,
+        written: sum.written + b.written,
+      }),
+      { read: 0, written: 0 },
+    ))
     h.since ??= at
 
     const last = this.last
@@ -91,6 +98,8 @@ export class HistoryRecorder {
         rate = (Math.max(dRead, dWritten) * 1000) / (at - last.at)
     }
 
+    total.read += dRead
+    total.written += dWritten
     add(h.hourly, at - (at % HOUR), dRead, dWritten, rate)
     add(h.daily, at - (at % DAY), dRead, dWritten, rate)
     h.hourly = h.hourly.filter((b) => b.t > at - KEEP_HOURLY)

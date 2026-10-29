@@ -671,7 +671,7 @@
         const p24 = sum(h.hourly, now - 2 * DAY, now - DAY)
         const d7 = sum(h.hourly, now - 7 * DAY)
         const p7 = sum(h.hourly, now - 14 * DAY, now - 7 * DAY)
-        const all = sum(h.daily, 0)
+        const all = h.total ?? sum(h.daily, 0)
 
         $('t24').textContent = bytes(d24.read + d24.written)
         $('t24-dirs').innerHTML = dirs(d24.read, d24.written)
@@ -695,7 +695,9 @@
         $('all-dirs').innerHTML = dirs(all.read, all.written)
         $('all-since').textContent =
           'since ' + new Date(h.since).toLocaleDateString()
-        let run = 0
+        // Start from what pruned days contributed, so the line ends at the card's total
+        const kept = sum(h.daily, 0)
+        let run = all.read + all.written - (kept.read + kept.written)
         spark(
           'all-spark',
           h.daily.map((b) => (run += b.read + b.written)),
