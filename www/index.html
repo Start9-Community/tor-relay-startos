@@ -671,7 +671,7 @@
         const p24 = sum(h.hourly, now - 2 * DAY, now - DAY)
         const d7 = sum(h.hourly, now - 7 * DAY)
         const p7 = sum(h.hourly, now - 14 * DAY, now - 7 * DAY)
-        const all = sum(h.daily, 0)
+        const all = h.total ?? sum(h.daily, 0)
 
         $('t24').textContent = bytes(d24.read + d24.written)
         $('t24-dirs').innerHTML = dirs(d24.read, d24.written)

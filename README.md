@@ -53,7 +53,7 @@ Everything lives on the single `main` volume, mounted at `/data`. Each mode has 
 | `store.json`   | Package settings (see File Models)                                                                                                |
 | `torrc`        | Rendered on every start                                                                                                           |
 | `status.json`  | Written every health-check cycle; read by the dashboard                                                                           |
-| `history.json` | Hourly (31 days) and daily (3 years) traffic totals and Tor start count; saved every 5 minutes, so a stop loses at most 5 minutes |
+| `history.json` | Lifetime traffic totals, hourly (31 days) and daily (3 years) buckets, and Tor start count; saved every 5 minutes, so a stop loses at most 5 minutes |
 | `relay/`       | Tor DataDirectory and identity for relay mode                                                                                     |
 | `bridge/`      | Tor DataDirectory and identity for bridge mode, including `pt_state/` for obfs4                                                   |
 
