@@ -42,17 +42,20 @@ The image is built from the package's `Dockerfile`: Alpine with its `tor` and `l
 
 `tor-sub` runs three processes: a `prepare` oneshot that creates the active mode's DataDirectory and hands it to the `tor` user, `tor -f /data/torrc` as user `tor`, and `busybox-extras httpd` serving the dashboard from `/www` on port 80.
 
+The `tor` health check polls Tor every 30 seconds over the control socket and Tor's Prometheus MetricsPort (`127.0.0.1:9035`, loopback only, no interface). It writes the result to `status.json` and adds the traffic since the last poll to `history.json`. The dashboard shows traffic totals and charts from `history.json`, the current rate against the configured bandwidth limit, consensus flags and weight (relay mode), open circuits, relay connections, circuit handshakes, directory requests, and every `tor_relay_dos_total` counter (the `begindir_*` ones need Tor 0.4.9.15) together with overload signals.
+
 ## Volume and Data Layout
 
 Everything lives on the single `main` volume, mounted at `/data`. Each mode has its own DataDirectory and therefore its own identity.
 
-| Path          | Contents                                                                        |
-| ------------- | ------------------------------------------------------------------------------- |
-| `store.json`  | Package settings (see File Models)                                              |
-| `torrc`       | Rendered on every start                                                         |
-| `status.json` | Written every health-check cycle; read by the dashboard                         |
-| `relay/`      | Tor DataDirectory and identity for relay mode                                   |
-| `bridge/`     | Tor DataDirectory and identity for bridge mode, including `pt_state/` for obfs4 |
+| Path           | Contents                                                                                                                          |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `store.json`   | Package settings (see File Models)                                                                                                |
+| `torrc`        | Rendered on every start                                                                                                           |
+| `status.json`  | Written every health-check cycle; read by the dashboard                                                                           |
+| `history.json` | Hourly (31 days) and daily (3 years) traffic totals and Tor start count; saved every 5 minutes, so a stop loses at most 5 minutes |
+| `relay/`       | Tor DataDirectory and identity for relay mode                                                                                     |
+| `bridge/`      | Tor DataDirectory and identity for bridge mode, including `pt_state/` for obfs4                                                   |
 
 ## File Models
 
@@ -71,11 +74,11 @@ None.
 
 Three interfaces. The two Tor ports are raw TCP passed through as-is; Tor negotiates its own TLS.
 
-| Interface         | ID      | Type | Port                    | Purpose                                                  |
-| ----------------- | ------- | ---- | ----------------------- | -------------------------------------------------------- |
-| Dashboard         | `ui`    | ui   | 80 (HTTP)               | Status page: mode, fingerprint, reachability, traffic    |
-| Tor ORPort        | `or`    | p2p  | 9001 (TCP, passthrough) | Tor network traffic; needs exactly one public IPv4       |
-| obfs4 Bridge Port | `obfs4` | p2p  | 8443 (TCP, passthrough) | obfs4 clients in bridge mode; needs the same public IPv4 |
+| Interface         | ID      | Type | Port                    | Purpose                                                                                          |
+| ----------------- | ------- | ---- | ----------------------- | ------------------------------------------------------------------------------------------------ |
+| Dashboard         | `ui`    | ui   | 80 (HTTP)               | Status page: reachability, traffic history, bandwidth limit, consensus flags, load, DoS counters |
+| Tor ORPort        | `or`    | p2p  | 9001 (TCP, passthrough) | Tor network traffic; needs exactly one public IPv4                                               |
+| obfs4 Bridge Port | `obfs4` | p2p  | 8443 (TCP, passthrough) | obfs4 clients in bridge mode; needs the same public IPv4                                         |
 
 When StartOS assigns an external ORPort other than 9001, the torrc advertises the external port with `NoListen` and listens on 9001 with `NoAdvertise`. The obfs4 port has no such split: bridge mode refuses to start unless it is reachable on 8443. IPv6 is advertised only when a public IPv6 is enabled on the ORPort.
 
