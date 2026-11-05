@@ -91,6 +91,9 @@ const dict = {
   'secret_id_key is missing or is not an RSA private key.': 87,
   'ed25519_master_id_secret_key is missing or malformed.': 88,
   "Run this only somewhere that shares no power, internet connection or location with a server hosting onion services. If both can go offline together or share a connection, an attacker can link the onion address to this node's address.": 89,
+  'Outbound Gateway': 90,
+  'Tor connects to other relays through the gateway its address is published on.': 91,
+  "Tor connects to other relays from a different address than the one it publishes, which links the two. Send Tor Relay's outbound traffic through the gateway its address is published on.": 92,
 } as const
 
 /**

@@ -4,7 +4,7 @@ import { storeJson } from './fileModels/store.json'
 import { HistoryRecorder } from './fileModels/history.json'
 import { i18n } from './i18n'
 import { sdk } from './sdk'
-import { dataMount, modeDir, uiPort } from './utils'
+import { dataMount, modeDir, orHostId, uiPort } from './utils'
 import { NodeStatus, probe } from './control'
 import { obfs4Exposure, orExposure } from './utils'
 import { blocker } from './utils'
@@ -156,7 +156,6 @@ export const main = sdk.setupMain(async ({ effects }) => {
         },
         trigger: sdk.trigger.statusTrigger(30_000, {
           starting: 2_000,
-          waiting: 2_000,
           loading: 2_000,
           failure: 5_000,
         }),
@@ -194,6 +193,39 @@ export const main = sdk.setupMain(async ({ effects }) => {
               { ip },
             ),
           }
+        },
+        trigger: sdk.trigger.cooldownTrigger(30_000),
+      },
+      requires: ['tor'],
+    })
+    .addHealthCheck('gateway-match', {
+      ready: {
+        display: i18n('Outbound Gateway'),
+        fn: async (): Promise<HealthCheckResult> => {
+          const ips = [
+            ...((await torrcFile.read().once()) ?? '').matchAll(
+              /^Address (\S+)/gm,
+            ),
+          ].map((m) => m[1])
+          if (!ips.length) return { result: 'disabled' }
+          const { outbound, addresses } = await sdk.host.getAddressGateways(
+            effects,
+            orHostId,
+            ips,
+          )
+          return addresses.every((a) => a.gateway === outbound)
+            ? {
+                result: 'success',
+                message: i18n(
+                  'Tor connects to other relays through the gateway its address is published on.',
+                ),
+              }
+            : {
+                result: 'failure',
+                message: i18n(
+                  "Tor connects to other relays from a different address than the one it publishes, which links the two. Send Tor Relay's outbound traffic through the gateway its address is published on.",
+                ),
+              }
         },
         trigger: sdk.trigger.cooldownTrigger(30_000),
       },

@@ -22,6 +22,8 @@ A relay or bridge needs a public IPv4 that does not change. Behind CGNAT or DS-L
 3. Run **Confirm Public IP** and confirm the address is static.
 4. Start the service. After about 20 minutes the **Reachability** check turns green, and a few hours later the node appears on Tor Metrics.
 
+If you route the address in through StartTunnel to keep your home IP private, send Tor Relay's outbound traffic through that tunnel too. Otherwise the relays your node connects to see your home IP, linking it to the address the directory publishes, and the **Outbound Gateway** check fails until the two match. If you use the tunnel only because of CGNAT or DS-Lite and don't mind the link, you can leave outbound traffic where it is.
+
 ## Using Tor Relay
 
 ### Actions
