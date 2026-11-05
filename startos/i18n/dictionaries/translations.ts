@@ -92,6 +92,9 @@ export default {
     87: 'Falta secret_id_key o no es una clave privada RSA.',
     88: 'Falta ed25519_master_id_secret_key o está dañada.',
     89: 'Ejecuta esto solo en un lugar que no comparta alimentación eléctrica, conexión a internet ni ubicación con un servidor que aloje servicios onion. Si ambos pueden quedarse sin conexión a la vez o comparten conexión, un atacante puede vincular la dirección onion con la dirección de este nodo.',
+    90: 'Puerta de enlace de salida',
+    91: 'Tor se conecta a otros relés a través de la puerta de enlace en la que está publicada su dirección.',
+    92: 'Tor se conecta a otros relés desde una dirección distinta de la que publica, lo que vincula ambas. Envía el tráfico de salida de Tor Relay por la puerta de enlace en la que está publicada su dirección.',
   },
   de_DE: {
     0: 'Modus',
@@ -184,6 +187,9 @@ export default {
     87: 'secret_id_key fehlt oder ist kein privater RSA-Schlüssel.',
     88: 'ed25519_master_id_secret_key fehlt oder ist beschädigt.',
     89: 'Betreiben Sie dies nur an einem Ort, der weder Stromversorgung noch Internetanschluss noch Standort mit einem Server teilt, der Onion-Dienste hostet. Können beide gleichzeitig ausfallen oder teilen sie sich eine Verbindung, kann ein Angreifer die Onion-Adresse mit der Adresse dieses Knotens verknüpfen.',
+    90: 'Ausgehendes Gateway',
+    91: 'Tor verbindet sich mit anderen Relays über das Gateway, auf dem seine Adresse veröffentlicht ist.',
+    92: 'Tor verbindet sich mit anderen Relays von einer anderen Adresse als der, die es veröffentlicht, und verknüpft so beide. Leiten Sie den ausgehenden Datenverkehr von Tor Relay über das Gateway, auf dem seine Adresse veröffentlicht ist.',
   },
   pl_PL: {
     0: 'Tryb',
@@ -276,6 +282,9 @@ export default {
     87: 'Brak secret_id_key lub nie jest to prywatny klucz RSA.',
     88: 'Brak ed25519_master_id_secret_key lub klucz jest uszkodzony.',
     89: 'Uruchamiaj to tylko tam, gdzie nie dzieli zasilania, łącza internetowego ani lokalizacji z serwerem hostującym usługi onion. Jeśli oba mogą jednocześnie przestać działać lub dzielą połączenie, atakujący może powiązać adres onion z adresem tego węzła.',
+    90: 'Brama wychodząca',
+    91: 'Tor łączy się z innymi przekaźnikami przez bramę, na której opublikowany jest jego adres.',
+    92: 'Tor łączy się z innymi przekaźnikami z innego adresu niż ten, który publikuje, co wiąże oba adresy. Kieruj ruch wychodzący Tor Relay przez bramę, na której opublikowany jest jego adres.',
   },
   fr_FR: {
     0: 'Mode',
@@ -368,5 +377,8 @@ export default {
     87: "secret_id_key est absent ou n'est pas une clé privée RSA.",
     88: 'ed25519_master_id_secret_key est absent ou corrompu.',
     89: "N'exécutez ceci qu'à un endroit qui ne partage ni alimentation, ni connexion internet, ni emplacement avec un serveur hébergeant des services onion. Si les deux peuvent tomber en même temps ou partagent une connexion, un attaquant peut relier l'adresse onion à l'adresse de ce nœud.",
+    90: 'Passerelle sortante',
+    91: 'Tor se connecte aux autres relais par la passerelle sur laquelle son adresse est publiée.',
+    92: "Tor se connecte aux autres relais depuis une adresse différente de celle qu'il publie, ce qui relie les deux. Faites passer le trafic sortant de Tor Relay par la passerelle sur laquelle son adresse est publiée.",
   },
 } satisfies Record<string, LangDict>

@@ -116,14 +116,15 @@ Both tasks are critical, so the service cannot start while either is open.
 
 ## Health Checks
 
-`Node Setup` replaces the Tor checks while Tor is held back; once it starts, `Tor` and `Reachability` take over.
+`Node Setup` replaces the Tor checks while Tor is held back; once it starts, `Tor`, `Reachability` and `Outbound Gateway` take over.
 
-| Check        | Probes                                                                  | Failure means                                                                                                                      |
-| ------------ | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Node Setup   | Nothing; present only while Tor is held back                            | Its message names what is missing: configuration, the public IPv4, its confirmation, or (bridge mode) the obfs4 address or port.   |
-| Dashboard    | Port 80 listening                                                       | The dashboard process died.                                                                                                        |
-| Tor          | Bootstrap progress over the control socket                              | Loading while bootstrapping; stuck below 100% means Tor cannot reach the network.                                                  |
-| Reachability | Tor's ORPort self-test and the directory's acceptance of the descriptor | Loading for the first 20 minutes (45 with a public IPv6), then failure: the public IPv4's port forward does not reach this server. |
+| Check            | Probes                                                                                              | Failure means                                                                                                                                             |
+| ---------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Node Setup       | Nothing; present only while Tor is held back                                                        | Its message names what is missing: configuration, the public IPv4, its confirmation, or (bridge mode) the obfs4 address or port.                          |
+| Dashboard        | Port 80 listening                                                                                   | The dashboard process died.                                                                                                                               |
+| Tor              | Bootstrap progress over the control socket                                                          | Loading while bootstrapping; stuck below 100% means Tor cannot reach the network.                                                                         |
+| Reachability     | Tor's ORPort self-test and the directory's acceptance of the descriptor                             | Loading for the first 20 minutes (45 with a public IPv6), then failure: the public IPv4's port forward does not reach this server.                        |
+| Outbound Gateway | The torrc's `Address`, against the gateway StartOS publishes it on and Tor Relay's outbound gateway | The relay publishes one address but connects to other relays from another, through a different gateway; the two are linked. A warning: Tor keeps running. |
 
 ## Backups and Restore
 

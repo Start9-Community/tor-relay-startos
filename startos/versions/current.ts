@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '0.4.9.15:0',
+  version: '0.4.9.15:1',
   releaseNotes: {
     en_US:
-      "Updates Tor to 0.4.9.15, a security release that strengthens the DoS defenses for relays. The dashboard now keeps traffic history across restarts and shows daily, weekly and monthly charts, bandwidth-limit use, consensus flags and weight, relay load, and Tor's DoS defense counters.",
+      'Adds an Outbound Gateway health check that fails when Tor would connect to other relays from a different address than the one it publishes. Requires StartOS 0.4.1 or later.',
     es_ES:
-      'Actualiza Tor a 0.4.9.15, una versión de seguridad que refuerza las defensas DoS de los relés. El panel ahora conserva el historial de tráfico entre reinicios y muestra gráficos diarios, semanales y mensuales, el uso del límite de ancho de banda, las banderas y el peso en el consenso, la carga del relé y los contadores de las defensas DoS de Tor.',
+      'Añade una comprobación de estado Puerta de enlace de salida que falla cuando Tor se conectaría a otros relés desde una dirección distinta de la que publica. Requiere StartOS 0.4.1 o posterior.',
     de_DE:
-      'Aktualisiert Tor auf 0.4.9.15, ein Sicherheits-Release, das die DoS-Abwehr für Relays verstärkt. Das Dashboard behält den Traffic-Verlauf über Neustarts hinweg und zeigt Tages-, Wochen- und Monatsdiagramme, die Auslastung des Bandbreitenlimits, Konsens-Flags und -Gewicht, die Relay-Last sowie die Zähler der DoS-Abwehr von Tor.',
+      'Fügt eine Integritätsprüfung „Ausgehendes Gateway“ hinzu, die fehlschlägt, wenn Tor sich von einer anderen Adresse als der veröffentlichten mit anderen Relays verbinden würde. Erfordert StartOS 0.4.1 oder neuer.',
     pl_PL:
-      'Aktualizuje Tora do wersji 0.4.9.15, wydania bezpieczeństwa wzmacniającego obronę przekaźników przed DoS. Panel zachowuje teraz historię ruchu między restartami i pokazuje wykresy dzienne, tygodniowe i miesięczne, wykorzystanie limitu przepustowości, flagi i wagę w konsensusie, obciążenie przekaźnika oraz liczniki obrony Tora przed DoS.',
+      'Dodaje kontrolę stanu Brama wychodząca, która zgłasza błąd, gdy Tor łączyłby się z innymi przekaźnikami z innego adresu niż ten, który publikuje. Wymaga StartOS 0.4.1 lub nowszego.',
     fr_FR:
-      "Met à jour Tor vers 0.4.9.15, une version de sécurité qui renforce les défenses DoS des relais. Le tableau de bord conserve désormais l'historique du trafic entre les redémarrages et affiche des graphiques quotidiens, hebdomadaires et mensuels, l'utilisation de la limite de bande passante, les drapeaux et le poids dans le consensus, la charge du relais et les compteurs des défenses DoS de Tor.",
+      "Ajoute une vérification d'état Passerelle sortante, qui échoue lorsque Tor se connecterait aux autres relais depuis une adresse différente de celle qu'il publie. Nécessite StartOS 0.4.1 ou ultérieur.",
   },
   migrations: {
     up: async ({ effects }) => {},
