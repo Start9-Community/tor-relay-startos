@@ -80,7 +80,7 @@ Three interfaces. The two Tor ports are raw TCP passed through as-is; Tor negoti
 | Tor ORPort        | `or`    | p2p  | 9001 (TCP, passthrough) | Tor network traffic; needs exactly one public IPv4                                               |
 | obfs4 Bridge Port | `obfs4` | p2p  | 8443 (TCP, passthrough) | obfs4 clients in bridge mode; needs the same public IPv4                                         |
 
-When StartOS assigns an external ORPort other than 9001, the torrc advertises the external port with `NoListen` and listens on 9001 with `NoAdvertise`. The obfs4 port has no such split: bridge mode refuses to start unless it is reachable on 8443. IPv6 is advertised only when a public IPv6 is enabled on the ORPort.
+When StartOS assigns an external ORPort other than 9001, the torrc advertises the external port with `NoListen` and listens on 9001 with `NoAdvertise`. The obfs4 port has no such split: bridge mode refuses to start unless it is reachable on 8443. Both ports listen on IPv4 and IPv6, because StartOS reaches the container in the client's own address family; IPv6 is advertised only when a public IPv6 is enabled on the ORPort.
 
 ## Installation and First-Run Flow
 
