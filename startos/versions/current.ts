@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '0.4.9.15:1',
+  version: '0.4.9.15:2',
   releaseNotes: {
     en_US:
-      'Adds an Outbound Gateway health check that fails when Tor would connect to other relays from a different address than the one it publishes. Requires StartOS 0.4.1 or later.',
+      'The ORPort and the obfs4 bridge port now accept connections over IPv6 as well as IPv4, so every address StartOS shows for them works. Requires StartOS 0.4.2 or later.',
     es_ES:
-      'Añade una comprobación de estado Puerta de enlace de salida que falla cuando Tor se conectaría a otros relés desde una dirección distinta de la que publica. Requiere StartOS 0.4.1 o posterior.',
+      'El ORPort y el puerto de puente obfs4 ahora aceptan conexiones por IPv6 además de IPv4, así que todas las direcciones que StartOS muestra para ellos funcionan. Requiere StartOS 0.4.2 o posterior.',
     de_DE:
-      'Fügt eine Integritätsprüfung „Ausgehendes Gateway“ hinzu, die fehlschlägt, wenn Tor sich von einer anderen Adresse als der veröffentlichten mit anderen Relays verbinden würde. Erfordert StartOS 0.4.1 oder neuer.',
+      'Der ORPort und der obfs4-Bridge-Port nehmen Verbindungen jetzt auch über IPv6 an, nicht nur über IPv4, sodass jede Adresse funktioniert, die StartOS für sie anzeigt. Erfordert StartOS 0.4.2 oder neuer.',
     pl_PL:
-      'Dodaje kontrolę stanu Brama wychodząca, która zgłasza błąd, gdy Tor łączyłby się z innymi przekaźnikami z innego adresu niż ten, który publikuje. Wymaga StartOS 0.4.1 lub nowszego.',
+      'ORPort i port mostka obfs4 przyjmują teraz połączenia przez IPv6, a nie tylko przez IPv4, więc działa każdy adres, który StartOS dla nich pokazuje. Wymaga StartOS 0.4.2 lub nowszego.',
     fr_FR:
-      "Ajoute une vérification d'état Passerelle sortante, qui échoue lorsque Tor se connecterait aux autres relais depuis une adresse différente de celle qu'il publie. Nécessite StartOS 0.4.1 ou ultérieur.",
+      "L'ORPort et le port de pont obfs4 acceptent désormais les connexions en IPv6 comme en IPv4 : chaque adresse que StartOS affiche pour eux fonctionne. Nécessite StartOS 0.4.2 ou ultérieur.",
   },
   migrations: {
     up: async ({ effects }) => {},

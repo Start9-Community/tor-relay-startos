@@ -57,11 +57,14 @@ export function renderTorrc(c: TorrcInput): string {
   if (c.contactInfo) lines.push(`ContactInfo ${c.contactInfo}`)
   lines.push(`Address ${c.address}`)
 
+  // StartOS connects IPv6 clients to the container over IPv6, so listen on both
+  // families and let `family` limit only what Tor advertises.
   if (c.assignedOrPort !== null && c.assignedOrPort !== orPort) {
     lines.push(`ORPort ${c.assignedOrPort} NoListen${family}`)
-    lines.push(`ORPort ${orPort} NoAdvertise${family}`)
+    lines.push(`ORPort ${orPort} NoAdvertise`)
   } else {
     lines.push(`ORPort ${orPort}${family}`)
+    if (!c.ipv6) lines.push(`ORPort [::]:${orPort} NoAdvertise`)
   }
 
   lines.push(
@@ -84,7 +87,7 @@ export function renderTorrc(c: TorrcInput): string {
       'BridgeRelay 1',
       'BridgeDistribution any',
       `ServerTransportPlugin obfs4 exec ${lyrebirdPath}`,
-      `ServerTransportListenAddr obfs4 0.0.0.0:${obfs4Port}`,
+      `ServerTransportListenAddr obfs4 [::]:${obfs4Port}`,
       'ExtORPort auto',
     )
   }
