@@ -1,7 +1,7 @@
 # Version pins. Bump by hand as described in UPDATING.md.
 FROM alpine:3.23
 
-ARG TOR_VERSION=0.4.9.15-r0
+ARG TOR_VERSION=0.4.9.17-r0
 ARG LYREBIRD_VERSION=0.7.0-r6
 
 RUN apk add --no-cache \
