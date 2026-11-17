@@ -10,7 +10,7 @@ const dict = {
   '1-19 letters and digits': 6,
   'Contact Info': 7,
   'How the Tor Project can reach you about this node, usually an email address. Published with the node.': 8,
-  'A single line of text': 9,
+  'A single line of text, not ending in a backslash': 9,
   'Bandwidth Rate': 10,
   'Sustained bandwidth Tor may use in each direction. Tor needs at least 75 KB/s.': 11,
   'Bandwidth Burst': 12,

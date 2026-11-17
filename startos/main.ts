@@ -62,6 +62,8 @@ export const main = sdk.setupMain(async ({ effects }) => {
         String(uiPort),
         '-h',
         '/www',
+        '-u',
+        'nobody',
       ],
     },
     ready: {

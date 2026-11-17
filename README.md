@@ -40,7 +40,7 @@ The image is built from the package's `Dockerfile`: Alpine with its `tor` and `l
 | Subcontainer  | `tor-sub`, shared by every process    |
 | Entrypoint    | Set per daemon by the package (below) |
 
-`tor-sub` runs three processes: a `prepare` oneshot that creates the active mode's DataDirectory and hands it to the `tor` user, `tor -f /data/torrc` as user `tor`, and `busybox-extras httpd` serving the dashboard from `/www` on port 80.
+`tor-sub` runs three processes: a `prepare` oneshot that creates the active mode's DataDirectory and hands it to the `tor` user, `tor -f /data/torrc` as user `tor`, and `busybox-extras httpd` serving the dashboard from `/www` on port 80, which drops to `nobody` once it has bound the port.
 
 The `tor` health check polls Tor every 30 seconds over the control socket and Tor's Prometheus MetricsPort (`127.0.0.1:9035`, loopback only, no interface). It writes the result to `status.json` and adds the traffic since the last poll to `history.json`. The dashboard shows traffic totals and charts from `history.json`, the current rate against the configured bandwidth limit, consensus flags and weight (relay mode), open circuits, relay connections, circuit handshakes, directory requests, and every `tor_relay_dos_total` counter (the `begindir_*` ones need Tor 0.4.9.15) together with overload signals.
 

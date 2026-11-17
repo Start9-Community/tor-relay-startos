@@ -54,7 +54,9 @@ export function renderTorrc(c: TorrcInput): string {
     '',
     `Nickname ${c.nickname}`,
   ]
-  if (c.contactInfo) lines.push(`ContactInfo ${c.contactInfo}`)
+  // A trailing backslash would continue the line into the next option.
+  const contact = c.contactInfo?.replace(/\\+$/, '')
+  if (contact) lines.push(`ContactInfo ${contact}`)
   lines.push(`Address ${c.address}`)
 
   // StartOS connects IPv6 clients to the container over IPv6, so listen on both
