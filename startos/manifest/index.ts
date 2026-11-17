@@ -5,7 +5,7 @@ export const manifest = setupManifest({
   id: 'tor-relay',
   title: 'Tor Relay',
   license: 'BSD-3-Clause',
-  packageRepo: 'https://github.com/Start9-Community/tor-relay-startos',
+  packageRepo: 'https://github.com/Start9Labs/tor-relay-startos',
   upstreamRepo: 'https://gitlab.torproject.org/tpo/core/tor',
   marketingUrl: 'https://community.torproject.org/relay/',
   donationUrl: 'https://donate.torproject.org/',
