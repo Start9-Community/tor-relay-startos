@@ -41,8 +41,8 @@ export const configureSpec = InputSpec.of({
     placeholder: 'tor@example.com',
     patterns: [
       {
-        regex: '^[^\\x00-\\x1f]*$',
-        description: i18n('A single line of text'),
+        regex: '^[^\\x00-\\x1f]*(?<!\\\\)$',
+        description: i18n('A single line of text, not ending in a backslash'),
       },
     ],
     maxLength: 200,
